@@ -49,9 +49,8 @@ public class CheckLogin extends HttpServlet{
         String pwd = null;
         try {
             usrn = StringEscapeUtils.escapeJava(request.getParameter("username"));
-            email = StringEscapeUtils.escapeJava(request.getParameter("email"));
             pwd = StringEscapeUtils.escapeJava(request.getParameter("pwd"));
-            if (usrn == null || pwd == null || email == null || email.isEmpty() || usrn.isEmpty() || pwd.isEmpty()) {
+            if (usrn == null || pwd == null || usrn.isEmpty() || pwd.isEmpty()) {
                 throw new Exception("Missing or empty credential value");
             }
 
