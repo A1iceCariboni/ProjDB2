@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 8.0.20, for macos10.15 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.28, for Win64 (x86_64)
 --
 -- Host: localhost    Database: db_telco_service
 -- ------------------------------------------------------
@@ -23,10 +23,10 @@ DROP TABLE IF EXISTS `employee`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `employee` (
-  `idemployee` int NOT NULL AUTO_INCREMENT,
+  `id_employee` int NOT NULL AUTO_INCREMENT,
   `username` varchar(45) DEFAULT NULL,
   `password` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`idemployee`)
+  PRIMARY KEY (`id_employee`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -48,10 +48,10 @@ DROP TABLE IF EXISTS `optional_product`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `optional_product` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id_optional_product` int NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL,
   `monthly_fee` int DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id_optional_product`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -76,8 +76,8 @@ CREATE TABLE `optional_product-order` (
   `id_optional_product` int NOT NULL,
   PRIMARY KEY (`id_order`,`id_optional_product`),
   KEY `id_optional_product_idx` (`id_optional_product`),
-  CONSTRAINT `id_optional_product` FOREIGN KEY (`id_optional_product`) REFERENCES `optional_product` (`id`),
-  CONSTRAINT `id_order` FOREIGN KEY (`id_order`) REFERENCES `order` (`id`)
+  CONSTRAINT `fk_optional_product_op-o` FOREIGN KEY (`id_optional_product`) REFERENCES `optional_product` (`id_optional_product`),
+  CONSTRAINT `fk_order_op-o` FOREIGN KEY (`id_order`) REFERENCES `order` (`id_order`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -102,8 +102,8 @@ CREATE TABLE `optional_product-service_package` (
   `id_service_package` int NOT NULL,
   PRIMARY KEY (`id_optional_product`,`id_service_package`),
   KEY `fk_service_package_idx` (`id_service_package`),
-  CONSTRAINT `fk_optional_product` FOREIGN KEY (`id_optional_product`) REFERENCES `optional_product` (`id`),
-  CONSTRAINT `fk_service_package` FOREIGN KEY (`id_service_package`) REFERENCES `service_package` (`idservice_package`)
+  CONSTRAINT `fk_optional_product_op-sp` FOREIGN KEY (`id_optional_product`) REFERENCES `optional_product` (`id_optional_product`),
+  CONSTRAINT `fk_service_package_op-sp` FOREIGN KEY (`id_service_package`) REFERENCES `service_package` (`id_service_package`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -124,7 +124,7 @@ DROP TABLE IF EXISTS `order`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `order` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id_order` int NOT NULL AUTO_INCREMENT,
   `total_value` float DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
   `number_of_failed_payment` int DEFAULT NULL,
@@ -133,13 +133,13 @@ CREATE TABLE `order` (
   `id_user` int DEFAULT NULL,
   `id_service_package` int DEFAULT NULL,
   `id_val_period` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id_order`),
   KEY `id_user_idx` (`id_user`),
   KEY `fk_service_package_idx` (`id_service_package`),
   KEY `fk_v_p_idx` (`id_val_period`),
-  CONSTRAINT `fk_v_p` FOREIGN KEY (`id_val_period`) REFERENCES `validity_period` (`idvalidity_period`),
-  CONSTRAINT `id_service_package` FOREIGN KEY (`id_service_package`) REFERENCES `service_package` (`idservice_package`),
-  CONSTRAINT `id_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`)
+  CONSTRAINT `fk_service_package_o` FOREIGN KEY (`id_service_package`) REFERENCES `service_package` (`id_service_package`),
+  CONSTRAINT `fk_user_o` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`),
+  CONSTRAINT `fk_validity_period_o` FOREIGN KEY (`id_val_period`) REFERENCES `validity_period` (`id_validity_period`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -160,7 +160,7 @@ DROP TABLE IF EXISTS `service`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `service` (
-  `idservice` int NOT NULL AUTO_INCREMENT,
+  `id_service` int NOT NULL AUTO_INCREMENT,
   `type` varchar(45) DEFAULT NULL,
   `number_minutes` int DEFAULT NULL,
   `fee_minutes` int DEFAULT NULL,
@@ -168,10 +168,7 @@ CREATE TABLE `service` (
   `fee_SMS` int DEFAULT NULL,
   `number_giga` int DEFAULT NULL,
   `fee_giga` int DEFAULT NULL,
-  `id_service_package` int DEFAULT NULL,
-  PRIMARY KEY (`idservice`),
-  KEY `fk_service_package_idx` (`id_service_package`),
-  CONSTRAINT `fk_s_p` FOREIGN KEY (`id_service_package`) REFERENCES `service_package` (`idservice_package`)
+  PRIMARY KEY (`id_service`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -185,6 +182,32 @@ LOCK TABLES `service` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `service-service_package`
+--
+
+DROP TABLE IF EXISTS `service-service_package`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service-service_package` (
+  `id_service` int NOT NULL,
+  `id_service_package` int NOT NULL,
+  PRIMARY KEY (`id_service`,`id_service_package`),
+  KEY `to_service_package_idx` (`id_service_package`),
+  CONSTRAINT `fk_service_package_s-sp` FOREIGN KEY (`id_service_package`) REFERENCES `service_package` (`id_service_package`),
+  CONSTRAINT `fk_service_s-sp` FOREIGN KEY (`id_service`) REFERENCES `service` (`id_service`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service-service_package`
+--
+
+LOCK TABLES `service-service_package` WRITE;
+/*!40000 ALTER TABLE `service-service_package` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service-service_package` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `service_activation`
 --
 
@@ -192,16 +215,13 @@ DROP TABLE IF EXISTS `service_activation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `service_activation` (
-  `idservice_activation` int NOT NULL AUTO_INCREMENT,
+  `id_service_activation` int NOT NULL AUTO_INCREMENT,
   `activation_date` datetime DEFAULT NULL,
   `deactivation_date` datetime DEFAULT NULL,
-  `id_service` int DEFAULT NULL,
-  `id_user` int DEFAULT NULL,
-  PRIMARY KEY (`idservice_activation`),
-  KEY `fk_ser_idx` (`id_service`),
-  KEY `fk_use_idx` (`id_user`),
-  CONSTRAINT `fk_ser` FOREIGN KEY (`id_service`) REFERENCES `service` (`idservice`),
-  CONSTRAINT `fk_use` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`)
+  `id_order` int DEFAULT NULL,
+  PRIMARY KEY (`id_service_activation`),
+  KEY `fk_ser_idx` (`id_order`),
+  CONSTRAINT `fk_order_sa` FOREIGN KEY (`id_order`) REFERENCES `order` (`id_order`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -222,12 +242,9 @@ DROP TABLE IF EXISTS `service_package`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `service_package` (
-  `idservice_package` int NOT NULL AUTO_INCREMENT,
+  `id_service_package` int NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL,
-  `id_val_period` int DEFAULT NULL,
-  PRIMARY KEY (`idservice_package`),
-  KEY `fk_val_period_idx` (`id_val_period`),
-  CONSTRAINT `fk_val_period` FOREIGN KEY (`id_val_period`) REFERENCES `validity_period` (`idvalidity_period`)
+  PRIMARY KEY (`id_service_package`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -241,6 +258,32 @@ LOCK TABLES `service_package` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `service_package-validity_period`
+--
+
+DROP TABLE IF EXISTS `service_package-validity_period`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `service_package-validity_period` (
+  `id_service_package` int NOT NULL,
+  `id_validity_period` int NOT NULL,
+  PRIMARY KEY (`id_service_package`,`id_validity_period`),
+  KEY `to_validity_period_idx` (`id_validity_period`),
+  CONSTRAINT `fk_service_package_sp-vp` FOREIGN KEY (`id_service_package`) REFERENCES `service_package` (`id_service_package`),
+  CONSTRAINT `fk_validity_period_sp-vp` FOREIGN KEY (`id_validity_period`) REFERENCES `validity_period` (`id_validity_period`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service_package-validity_period`
+--
+
+LOCK TABLES `service_package-validity_period` WRITE;
+/*!40000 ALTER TABLE `service_package-validity_period` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service_package-validity_period` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `user`
 --
 
@@ -248,12 +291,12 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id_user` int NOT NULL AUTO_INCREMENT,
   `email` varchar(45) DEFAULT NULL,
   `password` varchar(45) DEFAULT NULL,
   `insolvent` tinyint DEFAULT NULL,
   `username` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id_user`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -275,10 +318,10 @@ DROP TABLE IF EXISTS `validity_period`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `validity_period` (
-  `idvalidity_period` int NOT NULL AUTO_INCREMENT,
+  `id_validity_period` int NOT NULL AUTO_INCREMENT,
   `months` int DEFAULT NULL,
   `fee` int DEFAULT NULL,
-  PRIMARY KEY (`idvalidity_period`)
+  PRIMARY KEY (`id_validity_period`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -300,4 +343,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-27 13:10:15
+-- Dump completed on 2022-02-27 18:13:16
