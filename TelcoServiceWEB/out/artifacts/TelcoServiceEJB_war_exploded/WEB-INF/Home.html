@@ -3,8 +3,12 @@
 
 <meta charset="ISO-8859-1">
 <title>Home</title>
-<div align="right">
-    <a th:href="@{/Logout}">Logauz</a>
+<div align="right" th:if="${session.user != null}">
+    <p th:text="${'Hello, ' + session.user.username }" ></p>
+    <a th:href="@{/Logout}">Logout</a>
+</div>
+<div align="right" th:if="${session.user == null}">
+    <a th:href="@{/CheckLogin}">Login or Register</a>
 </div>
 <p>bella</p>
 

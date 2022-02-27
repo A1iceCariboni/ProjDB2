@@ -20,7 +20,6 @@
     <td>
         <form action="CheckLogin" method="POST">
             Username: <input type="text" name="username" required> <br>
-            Email: <input type="text" name="email" required> <br>
             Password: <input type="password" name="pwd" required><br>
             <input type="submit" value="Login">
             <p th:text=" ${errorMsg}"></p>
@@ -28,5 +27,9 @@
     </td>
 </tr>
 </table>
+<div>
+    <a href="Home">Enter without logging in</a><br>
+    <a href="CheckLoginEmployee">Login as employee</a>
+</div>
 </body>
 </html>

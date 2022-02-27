@@ -4,15 +4,33 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
     <display-name>Telco_Service</display-name>
+<servlet>
+    <servlet-name>GoToHomePage</servlet-name>
+    <servlet-class>it.polimi.telcoserviceweb.controllers.GoToHomePage</servlet-class>
+</servlet>
+<servlet>
+    <servlet-name>CheckLoginEmployee</servlet-name>
+    <servlet-class>it.polimi.telcoserviceweb.controllers.employee.CheckLoginEmployee</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>GoToHomePage</servlet-name>
+    <url-pattern>/Home</url-pattern>
+</servlet-mapping>
+<servlet-mapping>
+    <servlet-name>CheckLoginEmployee</servlet-name>
+    <url-pattern>/CheckLoginEmployee</url-pattern>
+</servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
     <filter>
         <filter-name>LoginChecker</filter-name>
         <filter-class>it.polimi.telcoserviceweb.filters.LoggedIn</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>LoginChecker</filter-name>
-        <url-pattern>/Home</url-pattern>
+        <url-pattern>/GoToHomeEmp</url-pattern>
+        <url-pattern>/Logout</url-pattern>
     </filter-mapping>
-    <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
-    </welcome-file-list>
 </web-app>

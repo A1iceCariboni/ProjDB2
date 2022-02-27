@@ -1,30 +1,26 @@
-package it.polimi.telcoserviceweb.controllers;
+package it.polimi.telcoserviceweb.controllers.employee;
 
-import it.polimi.telcoserviceejb.entities.User;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import javax.ejb.EJB;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.List;
 
-@WebServlet("/Home")
+@WebServlet("/GoToHomeEmp")
 
-public class GoToHomePage extends HttpServlet {
+public class GoToHomeEmp extends HttpServlet{
 
-    private static final long serialVersionUID = 4305243484881868983L;
+    private static final long serialVersionUID = 2440005123337534003L;
     private TemplateEngine templateEngine;
 
-    public GoToHomePage() {
+    public GoToHomeEmp() {
         super();
     }
 
@@ -39,7 +35,7 @@ public class GoToHomePage extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String path = "/WEB-INF/Home.html";
+        String path = "/WEB-INF/HomeEmp.html";
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 
@@ -53,6 +49,8 @@ public class GoToHomePage extends HttpServlet {
 
     public void destroy() {
     }
+
+
 
 
 

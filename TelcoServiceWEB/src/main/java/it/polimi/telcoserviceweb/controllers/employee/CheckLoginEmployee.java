@@ -1,7 +1,9 @@
-package it.polimi.telcoserviceweb.controllers;
+package it.polimi.telcoserviceweb.controllers.employee;
 
+import it.polimi.telcoserviceejb.entities.Employee;
 import it.polimi.telcoserviceejb.entities.User;
-import it.polimi.telcoserviceejb.exceptions.RegistrationException;
+import it.polimi.telcoserviceejb.exceptions.CredentialsException;
+import it.polimi.telcoserviceejb.services.EmployeeService;
 import it.polimi.telcoserviceejb.services.UserService;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
@@ -19,15 +21,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/CheckRegistration")
-public class CheckRegistration extends HttpServlet {
-    private static final long serialVersionUID = 3962998716934933850L;
+
+@WebServlet("/CheckLoginEmployee")
+public class CheckLoginEmployee extends HttpServlet {
+    private static final long serialVersionUID = -5933785467919537880L;
     private TemplateEngine templateEngine;
+    @EJB(name = "it.polimi.expensemanagmentejb.services/EmployeeService")
+    private EmployeeService empService;
 
-    @EJB(name = "it.polimi.telcoserviceejb.services/UserService")
-    private UserService userService;
-
-    public CheckRegistration(){ super(); }
+    public CheckLoginEmployee() {
+        super();
+    }
 
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
@@ -38,18 +42,15 @@ public class CheckRegistration extends HttpServlet {
         templateResolver.setSuffix(".html");
     }
 
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // obtain and escape params
         String usrn = null;
-        String email = null;
         String pwd = null;
         try {
             usrn = StringEscapeUtils.escapeJava(request.getParameter("username"));
-            email = StringEscapeUtils.escapeJava(request.getParameter("email"));
             pwd = StringEscapeUtils.escapeJava(request.getParameter("pwd"));
-            if (usrn == null || pwd == null || email == null || email.isEmpty() || usrn.isEmpty() || pwd.isEmpty()) {
+            if (usrn == null || pwd == null || usrn.isEmpty() || pwd.isEmpty()) {
                 throw new Exception("Missing or empty credential value");
             }
 
@@ -57,27 +58,42 @@ public class CheckRegistration extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing credential value");
             return;
         }
+        Employee emp;
         try {
-            userService.createUser(usrn, email, pwd);
-        } catch (RegistrationException e) {
+            emp = empService.checkCredentials(usrn, pwd);
+        } catch (CredentialsException | NonUniqueResultException e) {
             e.printStackTrace();
-            ServletContext servletContext = getServletContext();
-            final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-            ctx.setVariable("errorMsg", "Username already taken");
-            String path = "index.html";
-            templateEngine.process(path, ctx, response.getWriter());
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Could not check credentials");
             return;
         }
 
-        ServletContext servletContext = getServletContext();
-        final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-        ctx.setVariable("msg", "Ok now you can login");
-        String path = "index.html";
-        templateEngine.process(path, ctx, response.getWriter());
-
+        String path;
+        if (emp == null) {
+            ServletContext servletContext = getServletContext();
+            final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+            ctx.setVariable("errorMsg", "Incorrect username or password");
+            path = "/WEB-INF/LoginEmployee.html";
+            templateEngine.process(path, ctx, response.getWriter());
+        } else {
+            request.getSession().setAttribute("user", emp);
+            path = getServletContext().getContextPath() + "/GoToHomeEmp";
+            response.sendRedirect(path);
+        }
 
     }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String path = "/WEB-INF/LoginEmployee.html";
+        ServletContext servletContext = getServletContext();
+        final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+
+        templateEngine.process(path, ctx, response.getWriter());
+    }
+
     public void destroy() {
     }
 
 }
+
