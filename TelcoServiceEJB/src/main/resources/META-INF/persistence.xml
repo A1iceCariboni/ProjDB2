@@ -6,6 +6,7 @@
     <persistence-unit name="TelcoServiceEJB">
         <jta-data-source>TelcoDB</jta-data-source>
         <class>it.polimi.telcoserviceejb.entities.User</class>
+        <class>it.polimi.telcoserviceejb.entities.Employee</class>
         <properties>
             <property name="eclipselink.logging.level" value="FINE" />
         </properties>

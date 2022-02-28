@@ -3,11 +3,34 @@
 
 <meta charset="ISO-8859-1">
 <title>Employee Section</title>
+
+<link rel="stylesheet" type="text/css" media="all"
+      href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
 <div align="right">
     <p th:text="${'Hello, ' + session.user.username }" ></p>
     <a th:href="@{/Logout}">Logout</a>
 </div>
-<p>bella emp</p>
-
+<div>
+    <form action="AddOptionalProduct" method="POST">
+        Name: <input type="text" name="name" required> <br>
+        Monthly fee: <input type="number" name="fee" required><br>
+        <input type="submit" value="Add product">
+    </form>
+    <h4>Optional products available:</h4>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Monthly Fee</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="op : ${ops}">
+            <td th:text="${op.name}"></td>
+            <td th:text="${op.monthlyFee}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

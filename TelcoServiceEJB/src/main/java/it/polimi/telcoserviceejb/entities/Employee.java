@@ -12,7 +12,7 @@ public class Employee implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idemployee;
+    private int id_employee;
 
     private String username;
     private String password;
@@ -22,11 +22,11 @@ public class Employee implements Serializable {
     }
 
     public int getId() {
-        return idemployee;
+        return id_employee;
     }
 
     public void setId(int id) {
-        this.idemployee = id;
+        this.id_employee = id;
     }
 
     public String getUsername() {

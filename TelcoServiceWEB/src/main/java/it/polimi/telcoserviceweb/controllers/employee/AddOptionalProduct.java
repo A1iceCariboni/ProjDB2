@@ -1,13 +1,18 @@
 package it.polimi.telcoserviceweb.controllers.employee;
 
+import it.polimi.telcoserviceejb.entities.Employee;
 import it.polimi.telcoserviceejb.entities.OptionalProduct;
+import it.polimi.telcoserviceejb.exceptions.CredentialsException;
+import it.polimi.telcoserviceejb.services.EmployeeService;
 import it.polimi.telcoserviceejb.services.OptionalProductService;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import javax.ejb.EJB;
+import javax.persistence.NonUniqueResultException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,19 +20,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
-@WebServlet("/GoToHomeEmp")
-
-public class GoToHomeEmp extends HttpServlet{
-
-    private static final long serialVersionUID = 2440005123337534003L;
+@WebServlet("/AddOptionalProduct")
+public class AddOptionalProduct extends HttpServlet {
+    private static final long serialVersionUID = 2581016315576984824L;
     private TemplateEngine templateEngine;
-
-    @EJB(name = "it.polimi.telcoserviceejb.entities.OptionalProductService")
+    @EJB(name = "it.polimi.expensemanagmentejb.services/OptionalProductService")
     private OptionalProductService opService;
 
-    public GoToHomeEmp() {
+    public AddOptionalProduct() {
         super();
     }
 
@@ -40,34 +41,43 @@ public class GoToHomeEmp extends HttpServlet{
         templateResolver.setSuffix(".html");
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String name = null;
+        String strFee = null;
+        try {
+            name = StringEscapeUtils.escapeJava(request.getParameter("name"));
+            strFee = StringEscapeUtils.escapeJava(request.getParameter("fee"));
+            if (name == null || strFee == null || name.isEmpty() || strFee.isEmpty()) {
+                throw new Exception("Missing or empty fields");
+            }
 
-        List<OptionalProduct> ops = null;
-        try{
-            ops = opService.getAllOptionalProduct();
-        }catch(Exception e){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to get data");
+        } catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty fields");
             return;
         }
+        opService.createOptionalProduct(name, Integer.parseInt(strFee));
+
+        String path;
+        path = getServletContext().getContextPath() + "/GoToHomeEmp";
+        response.sendRedirect(path);
+
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         String path = "/WEB-INF/HomeEmp.html";
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-        ctx.setVariable("ops", ops);
-        templateEngine.process(path, ctx, response.getWriter());
-    }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doGet(request, response);
+        templateEngine.process(path, ctx, response.getWriter());
     }
 
     public void destroy() {
     }
 
-
-
-
-
 }
+
+
+
