@@ -1,7 +1,13 @@
 package it.polimi.telcoserviceweb.controllers.employee;
 
 import it.polimi.telcoserviceejb.entities.OptionalProduct;
+import it.polimi.telcoserviceejb.entities.Service;
+import it.polimi.telcoserviceejb.entities.ServicePackage;
+import it.polimi.telcoserviceejb.entities.ValidityPeriod;
 import it.polimi.telcoserviceejb.services.OptionalProductService;
+import it.polimi.telcoserviceejb.services.ServicePackageService;
+import it.polimi.telcoserviceejb.services.ServiceService;
+import it.polimi.telcoserviceejb.services.ValidityPeriodService;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -26,6 +32,13 @@ public class GoToHomeEmp extends HttpServlet{
 
     @EJB(name = "it.polimi.telcoserviceejb.entities.OptionalProductService")
     private OptionalProductService opService;
+    @EJB(name = "it.polimi.telcoserviceejb.entities.ValidityPeriodService")
+    private ValidityPeriodService validityPeriodService;
+
+    @EJB(name = "it.polimi.telcoserviceejb.entities.ServiceService")
+    private ServiceService serviceService;
+    @EJB(name = "it.polimi.telcoserviceejb.entities.ServicePackageService")
+    private ServicePackageService servicePackageService;
 
     public GoToHomeEmp() {
         super();
@@ -44,8 +57,14 @@ public class GoToHomeEmp extends HttpServlet{
             throws ServletException, IOException {
 
         List<OptionalProduct> ops = null;
+        List<ValidityPeriod> validityPeriods = null;
+        List<Service> services = null;
+        List<ServicePackage> servicePackages = null;
         try{
             ops = opService.getAllOptionalProduct();
+            validityPeriods = validityPeriodService.getAllValidityPeriod();
+            services = serviceService.getAllServices();
+            servicePackages = servicePackageService.getAllServicePackage();
         }catch(Exception e){
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to get data");
             return;
@@ -55,6 +74,9 @@ public class GoToHomeEmp extends HttpServlet{
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
         ctx.setVariable("ops", ops);
+        ctx.setVariable("val_pers", validityPeriods);
+        ctx.setVariable("services", services);
+        ctx.setVariable("service_packages", servicePackages);
         templateEngine.process(path, ctx, response.getWriter());
     }
 

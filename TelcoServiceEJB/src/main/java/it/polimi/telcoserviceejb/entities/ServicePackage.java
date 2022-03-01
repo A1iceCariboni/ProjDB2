@@ -7,6 +7,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "service_package")
+@NamedQueries({ @NamedQuery(name = "ServicePackage.findAll", query = "SELECT sp FROM ServicePackage sp")})
 public class ServicePackage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,19 +18,19 @@ public class ServicePackage {
     private String name;
 
     @ManyToMany
-    @JoinTable(name = "service_package-validity_period",
+    @JoinTable(name = "service_package_validity_period",
             joinColumns = @JoinColumn(name = "id_service_package"),
             inverseJoinColumns = @JoinColumn(name = "id_validity_period"))
     private List<ValidityPeriod> validityPeriods;
 
     @ManyToMany
-    @JoinTable(name = "optional_product-service_package",
+    @JoinTable(name = "optional_product_service_package",
             joinColumns = @JoinColumn(name = "id_service_package"),
             inverseJoinColumns = @JoinColumn(name = "id_optional_product"))
     private List<OptionalProduct> optionalProducts ;
 
     @ManyToMany
-    @JoinTable(name = "service-service_package",
+    @JoinTable(name = "service_service_package",
             joinColumns = @JoinColumn(name = "id_service_package"),
             inverseJoinColumns = @JoinColumn(name = "id_service"))
     private List<Service> services;

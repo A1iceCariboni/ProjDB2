@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "validity_period")
+@NamedQueries({@NamedQuery(name = "ValidityPeriod.findAll", query = "SELECT vp FROM ValidityPeriod vp")})
 public class ValidityPeriod {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

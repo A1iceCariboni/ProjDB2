@@ -42,7 +42,7 @@ public class Order {
     private ValidityPeriod validityPeriod;
 
     @ManyToMany
-    @JoinTable(name = "optional_product-order",
+    @JoinTable(name = "optional_product_order",
             joinColumns = @JoinColumn(name = "id_order"),
             inverseJoinColumns = @JoinColumn(name = "id_optional_product"))
     private List<OptionalProduct> optionalProducts;

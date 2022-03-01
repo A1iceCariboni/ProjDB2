@@ -6,31 +6,141 @@
 
 <link rel="stylesheet" type="text/css" media="all"
       href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
+
 <div align="right">
     <p th:text="${'Hello, ' + session.user.username }" ></p>
     <a th:href="@{/Logout}">Logout</a>
 </div>
-<div>
+
+
+<div align="left">
+    <h4>Optional products form:</h4>
+
+    <table>
+        <td>
     <form action="AddOptionalProduct" method="POST">
         Name: <input type="text" name="name" required> <br>
         Monthly fee: <input type="number" name="fee" required><br>
         <input type="submit" value="Add product">
     </form>
+        </td>
+    </table>
+</div>
+<div>
+    <h4>Service package form:</h4>
+
+    <table>
+        <td>
+    <form action="CreateServicePackage" method="POST">
+        Name: <input type="text" name="name" required> <br>
+        <h5>Select optional products:</h5> <br>
+        <ul>
+            <li th:each="op : ${ops}">
+                <input type="checkbox" th:field="*{op}" name = "ops" th:value="${op.getId()}" />
+                <label th:text="${op.getId()}">Op</label>
+            </li>
+        </ul>
+        <h5>Select validity period:</h5> <br>
+        <ul>
+            <li th:each="vp : ${val_pers}">
+                <input type="checkbox" th:field="*{vp}" name = "vps" th:value="${vp.getId()}" />
+                <label th:text="${vp.getId()}">Op</label>
+            </li>
+        </ul>
+        <h5>Select service:</h5> <br>
+        <ul>
+            <li th:each="s : ${services}">
+                <input type="checkbox" th:field="*{s}" name = "servs" th:value="${s.getId()}" />
+                <label th:text="${s.getId()}">Op</label>
+            </li>
+        </ul>
+        <input type="submit" value="Create service package">
+    </form>
+        </td>
+    </table>
+</div>
+
+<h4>Created Service Packages:</h4>
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="sp : ${service_packages}">
+        <td th:text="${sp.getId()}"></td>
+        <td th:text="${sp.getName()}"></td>
+    </tr>
+    </tbody>
+</table>
     <h4>Optional products available:</h4>
     <table>
         <thead>
         <tr>
+            <th>Id</th>
             <th>Name</th>
             <th>Monthly Fee</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="op : ${ops}">
-            <td th:text="${op.name}"></td>
-            <td th:text="${op.monthlyFee}"></td>
+            <td th:text="${op.getId()}"></td>
+            <td th:text="${op.getName()}"></td>
+            <td th:text="${op.getMonthlyFee()}"></td>
         </tr>
         </tbody>
     </table>
+<h4>Validity period available:</h4>
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Month</th>
+        <th>Fee</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="vp : ${val_pers}">
+        <td th:text="${vp.getId()}"></td>
+        <td th:text="${vp.getMonths()}"></td>
+        <td th:text="${vp.getFee()}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<h4>Services available:</h4>
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Type</th>
+        <th>Number Of Minutes</th>
+        <th>Fee For Minutes</th>
+        <th>Number Of SMS</th>
+        <th>Fee For SMS</th>
+        <th>Number Of Giga</th>
+        <th>Fee For Giga</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="s : ${services}">
+        <td th:text="${s.getId()}"></td>
+        <td th:text="${s.getType()}"></td>
+        <td th:text="${s.getNumberMinutes()}"></td>
+        <td th:text="${s.getFeeMinutes()}"></td>
+        <td th:text="${s.getNumberSms()}"></td>
+        <td th:text="${s.getFeeSms()}"></td>
+        <td th:text="${s.getNumberGiga()}"></td>
+        <td th:text="${s.getFeeGiga()}"></td>
+    </tr>
+    </tbody>
+</table>
+
+
+
 </div>
 </body>
 </html>

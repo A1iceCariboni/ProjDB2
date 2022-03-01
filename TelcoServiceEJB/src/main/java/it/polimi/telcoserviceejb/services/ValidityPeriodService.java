@@ -1,8 +1,7 @@
 package it.polimi.telcoserviceejb.services;
 
-import it.polimi.telcoserviceejb.entities.OptionalProduct;
 import it.polimi.telcoserviceejb.entities.Service;
-import it.polimi.telcoserviceejb.exceptions.ProductException;
+import it.polimi.telcoserviceejb.entities.ValidityPeriod;
 import it.polimi.telcoserviceejb.exceptions.ServiceException;
 
 import javax.ejb.Stateless;
@@ -12,23 +11,23 @@ import javax.persistence.PersistenceException;
 import java.util.List;
 
 @Stateless
-public class ServiceService {
+public class ValidityPeriodService {
 
     @PersistenceContext(unitName = "TelcoServiceEJB")
     private EntityManager em;
 
 
-    public ServiceService() {
+    public ValidityPeriodService() {
     }
 
-    public List<Service> getAllServices() throws ServiceException {
-        List<Service> s = null;
+    public List<ValidityPeriod> getAllValidityPeriod() throws ServiceException {
+        List<ValidityPeriod> vp = null;
         try{
-            s = em.createNamedQuery("Service.findAll", Service.class).getResultList();
+            vp = em.createNamedQuery("ValidityPeriod.findAll", ValidityPeriod.class).getResultList();
         }catch (PersistenceException e){
-            throw new ServiceException("Cannot load services");
+            throw new ServiceException("Cannot load validityPeriods");
         }
 
-        return s;
+        return vp;
     }
 }

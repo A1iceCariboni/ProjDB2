@@ -32,5 +32,7 @@
         <filter-name>LoginChecker</filter-name>
         <url-pattern>/GoToHomeEmp</url-pattern>
         <url-pattern>/Logout</url-pattern>
+        <url-pattern>/AddOptionalProduct</url-pattern>
+        <url-pattern>/CreateServicePackage</url-pattern>
     </filter-mapping>
 </web-app>

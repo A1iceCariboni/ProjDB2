@@ -9,7 +9,6 @@
         <class>it.polimi.telcoserviceejb.entities.Service</class>
         <class>it.polimi.telcoserviceejb.entities.OptionalProduct</class>
         <class>it.polimi.telcoserviceejb.entities.Service</class>
-        <class>it.polimi.telcoserviceejb.entities.ServiceActivation</class>
         <class>it.polimi.telcoserviceejb.entities.OptionalProduct</class>
         <class>it.polimi.telcoserviceejb.entities.Order</class>
         <class>it.polimi.telcoserviceejb.entities.Service</class>
