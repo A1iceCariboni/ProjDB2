@@ -18,19 +18,19 @@ public class ServicePackage {
     private String name;
 
     @ManyToMany
-    @JoinTable(name = "service_package_validity_period",
+    @JoinTable(name = "service_package__validity_period",
             joinColumns = @JoinColumn(name = "id_service_package"),
             inverseJoinColumns = @JoinColumn(name = "id_validity_period"))
     private List<ValidityPeriod> validityPeriods;
 
     @ManyToMany
-    @JoinTable(name = "optional_product_service_package",
+    @JoinTable(name = "optional_product__service_package",
             joinColumns = @JoinColumn(name = "id_service_package"),
             inverseJoinColumns = @JoinColumn(name = "id_optional_product"))
     private List<OptionalProduct> optionalProducts ;
 
     @ManyToMany
-    @JoinTable(name = "service_service_package",
+    @JoinTable(name = "service__service_package",
             joinColumns = @JoinColumn(name = "id_service_package"),
             inverseJoinColumns = @JoinColumn(name = "id_service"))
     private List<Service> services;

@@ -20,7 +20,7 @@ public class Order {
     @Column(name = "status", length = 45)
     private String status;
 
-    @Column(name = "number_of_failed_payment")
+    @Column(name = "number_of_failed_payments")
     private Integer numberOfFailedPayment;
 
     @Column(name = "start_date_sub")

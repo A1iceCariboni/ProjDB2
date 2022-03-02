@@ -16,14 +16,25 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
-    <title>Employee Section</title>
+    <title>Sales Reports Section</title>
+
+
 </head>
 <body>
-<form action="CheckLoginEmployee" method="POST">
-    Username: <input type="text" name="username" required> <br>
-    Password: <input type="text" name="pwd" required><br>
-    <input type="submit" value="Login">
-    <p th:text=" ${errorMsg}"></p>
-</form>
+<div align="right">
+    <p th:text="${'Hello, ' + session.user.username }" ></p>
+    <a th:href="@{/Logout}">Logout</a>
+</div>
+<div>
+<h4>Get number of total purchases for package:</h4>
+<form action="GetSalesReport" method="POST">
+    <input type="hidden" id="repId" name="reportType" value="NumberPurchForPack">
+<select name="pcks" class="form-select" required>
+    <option th:each="sp :${service_packages}" th:value="${sp.getId()}" th:text="${sp.getId()}">Op</option>
+</select>
+    <input type="submit" value="Get report">
+</form> <br>
+<p th:text="'Result: ' + ${res}"></p>
+</div>
 </body>
 </html>

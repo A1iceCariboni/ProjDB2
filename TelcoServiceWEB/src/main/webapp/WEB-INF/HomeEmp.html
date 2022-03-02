@@ -23,7 +23,7 @@
     <a th:href="@{/Logout}">Logout</a>
 </div>
 
-
+<a href="GetSalesReport">Go to sales reports section</a><br>
 <div align="left">
     <h4>Optional products form:</h4>
 
@@ -52,14 +52,14 @@
 
         <h5>Select validity period:</h5> <br>
 
-            <select name="vps" class="select-multiple" multiple>
+            <select name="vps" class="select-multiple" multiple required>
                 <option th:each="vp :${val_pers}" th:value="${vp.getId()}" th:text="${vp.getId()}">Op</option>
             </select>
 
 
         <h5>Select service:</h5> <br>
 
-        <select name="servs" class="select-multiple" multiple>
+        <select name="servs" class="select-multiple" multiple required>
             <option th:each="s :${services}" th:value="${s.getId()}" th:text="${s.getId()}">Op</option>
         </select>
         <input type="submit" value="Create service package">

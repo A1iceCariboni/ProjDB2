@@ -2,6 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <meta charset="ISO-8859-1">
+<link rel="stylesheet" type="text/css" media="all"
+      href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
+<link
+        rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+/>
+<link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"
+/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
 <title>Home</title>
 <div align="right" th:if="${session.user != null}">
     <p th:text="${'Hello, ' + session.user.username }" ></p>
@@ -10,7 +24,83 @@
 <div align="right" th:if="${session.user == null}">
     <a th:href="@{/CheckLogin}">Login or Register</a>
 </div>
-<p>bella</p>
+<h4>Available Service Packages:</h4>
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="sp : ${service_packages}">
+        <td th:text="${sp.getId()}"></td>
+        <td th:text="${sp.getName()}"></td>
+    </tr>
+    </tbody>
+</table>
+<h4>Optional products available:</h4>
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Monthly Fee</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="op : ${ops}">
+        <td th:text="${op.getId()}"></td>
+        <td th:text="${op.getName()}"></td>
+        <td th:text="${op.getMonthlyFee()}"></td>
+    </tr>
+    </tbody>
+</table>
+<h4>Validity period available:</h4>
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Month</th>
+        <th>Fee</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="vp : ${val_pers}">
+        <td th:text="${vp.getId()}"></td>
+        <td th:text="${vp.getMonths()}"></td>
+        <td th:text="${vp.getFee()}"></td>
+    </tr>
+    </tbody>
+</table>
 
+<h4>Services available:</h4>
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Type</th>
+        <th>Number Of Minutes</th>
+        <th>Fee For Minutes</th>
+        <th>Number Of SMS</th>
+        <th>Fee For SMS</th>
+        <th>Number Of Giga</th>
+        <th>Fee For Giga</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="s : ${services}">
+        <td th:text="${s.getId()}"></td>
+        <td th:text="${s.getType()}"></td>
+        <td th:text="${s.getNumberMinutes()}"></td>
+        <td th:text="${s.getFeeMinutes()}"></td>
+        <td th:text="${s.getNumberSms()}"></td>
+        <td th:text="${s.getFeeSms()}"></td>
+        <td th:text="${s.getNumberGiga()}"></td>
+        <td th:text="${s.getFeeGiga()}"></td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>
