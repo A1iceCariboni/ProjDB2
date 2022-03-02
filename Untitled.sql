@@ -510,7 +510,7 @@ CREATE TABLE `service` (
   `number_giga` int DEFAULT NULL,
   `fee_giga` float DEFAULT NULL,
   PRIMARY KEY (`id_service`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -519,6 +519,7 @@ CREATE TABLE `service` (
 
 LOCK TABLES `service` WRITE;
 /*!40000 ALTER TABLE `service` DISABLE KEYS */;
+INSERT INTO `service` VALUES (1,'mobile phone',0,0,0,0,0,0),(2,'mobile internet',0,0,0,0,100,9.95),(3,'fixed phone',0,0,0,0,0,0),(4,'mobile phone',100,0.5,50,1.5,0,0),(5,'fixed internet',0,0,0,0,1000,23.99);
 /*!40000 ALTER TABLE `service` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -539,10 +540,10 @@ IF(new.`type` = 'fixed phone') THEN
 	new.`fee_SMS` = 0,
 	new.`number_giga` = 0,
 	new.`fee_giga` = 0;
-ELSE IF(new.`type` = 'mobile phone' and new.`number_minutes` <> null and new.`fee_minutes` <> null and new.`number_SMS` <> null and new.`fee_SMS` <> null) THEN
+ELSE IF(new.`type` = 'mobile phone' and new.`number_minutes` IS NOT null and new.`fee_minutes` IS NOT null and new.`number_SMS` IS NOT null and new.`fee_SMS` IS NOT null) THEN
 	SET new.`number_giga` = 0,
 	new.`fee_giga` = 0;
-ELSE IF((new.`type` = 'fixed internet' or new.`type` = 'mobile internet') and new.`number_giga` <> null and new.`fee_giga` <> null) THEN
+ELSE IF((new.`type` = 'fixed internet' or new.`type` = 'mobile internet') and new.`number_giga` IS NOT null and new.`fee_giga` IS NOT null) THEN
 	SET new.`number_minutes` = 0,
 	new.`fee_minutes` = 0,
 	new.`number_SMS` = 0,
@@ -763,4 +764,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-02  1:59:45
+-- Dump completed on 2022-03-02  2:23:55
