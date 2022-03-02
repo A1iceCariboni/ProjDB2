@@ -12,6 +12,10 @@
         <class>it.polimi.telcoserviceejb.entities.OptionalProduct</class>
         <class>it.polimi.telcoserviceejb.entities.Order</class>
         <class>it.polimi.telcoserviceejb.entities.Service</class>
+        <class>it.polimi.telcoserviceejb.entities.SalesReportId</class>
+        <class>it.polimi.telcoserviceejb.entities.SalesReport</class>
+        <class>it.polimi.telcoserviceejb.entities.SalesReportId</class>
+        <class>it.polimi.telcoserviceejb.entities.SalesReport</class>
 
     </persistence-unit>
 </persistence>

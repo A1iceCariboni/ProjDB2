@@ -4,7 +4,11 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "sales_report")
-@NamedQueries({@NamedQuery(name = "SalesReport.getTotalNumberPerPackage", query = "SELECT SUM(sr.numberOfPurchases) FROM SalesReport sr WHERE sr.idServicePackage = ?1 ")}
+@NamedQueries({@NamedQuery(name = "SalesReport.getTotalNumberPerPackage", query = "SELECT SUM(sr.numberOfPurchases) FROM SalesReport sr WHERE sr.idServicePackage = ?1 "),
+                @NamedQuery(name = "SalesReport.getTotalNumberPerPackageAndVP", query = "SELECT sr.numberOfPurchases FROM SalesReport sr WHERE sr.idServicePackage = ?1 AND sr.idValidityPeriod = ?2 "),
+                @NamedQuery(name="SalesReport.valueNoOptProducts", query = "SELECT SUM(sr.valueNoOptProducts) FROM SalesReport sr WHERE sr.idServicePackage = ?1 "),
+                @NamedQuery(name="SalesReport.valueWithOptProducts", query = "SELECT SUM(sr.valueOfOptProducts) FROM SalesReport sr WHERE sr.idServicePackage = ?1 "),
+}
 )
 public class SalesReport {
     @EmbeddedId

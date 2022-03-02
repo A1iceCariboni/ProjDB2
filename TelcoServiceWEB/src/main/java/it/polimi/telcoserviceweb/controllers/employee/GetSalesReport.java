@@ -96,6 +96,19 @@ public class GetSalesReport extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Not existent service package");
                     return;
                 }
+            case "NumberPurchForPackAndVP":
+                Integer idPurch = null;
+                Integer idVP = null;
+                try {
+                    idPurch = Integer.parseInt(request.getParameter("pcks"));
+
+                    if (idPurch == null) {
+                        throw new Exception("Missing or empty fields");
+                    }
+                } catch (Exception e) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty fields");
+                    return;
+                }
         }
 
         String path = "/WEB-INF/SalesReports.html";
