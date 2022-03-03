@@ -52,7 +52,7 @@ public class CreateServicePackage extends HttpServlet {
 
         try {
             name = StringEscapeUtils.escapeJava(request.getParameter("name"));
-            validity_periods_ids = Arrays.asList(request.getParameterValues("vps")).stream().map(Integer::parseInt).collect(Collectors.toList());
+            validity_periods_ids = Arrays.asList(request.getParameterValues("vp")).stream().map(Integer::parseInt).collect(Collectors.toList());
             optional_products_ids = Arrays.asList(request.getParameterValues("ops")).stream().map(Integer::parseInt).collect(Collectors.toList());
             services_ids = Arrays.asList(request.getParameterValues("servs")).stream().map(Integer::parseInt).collect(Collectors.toList());
 

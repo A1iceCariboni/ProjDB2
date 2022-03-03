@@ -57,7 +57,6 @@ public class AddOptionalProduct extends HttpServlet {
             return;
         }
         opService.createOptionalProduct(name, Integer.parseInt(strFee));
-
         String path;
         path = getServletContext().getContextPath() + "/GoToHomeEmp";
         response.sendRedirect(path);
