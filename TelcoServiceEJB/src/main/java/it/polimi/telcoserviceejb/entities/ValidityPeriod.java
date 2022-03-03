@@ -5,7 +5,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "validity_period")
-@NamedQueries({@NamedQuery(name = "ValidityPeriod.findAll", query = "SELECT vp FROM ValidityPeriod vp")})
+@NamedQueries({@NamedQuery(name = "ValidityPeriod.findAll", query = "SELECT vp FROM ValidityPeriod vp"),
+        @NamedQuery(name = "ValidityPeriod.findById", query = "SELECT vp FROM ValidityPeriod vp WHERE vp.id = ?1")})
 public class ValidityPeriod {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

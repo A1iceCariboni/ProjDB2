@@ -23,12 +23,24 @@ public class OptionalProductService {
         em.persist(op);
     }
 
-    public List<OptionalProduct> getAllOptionalProduct() throws ProductException{
+    public List<OptionalProduct> getAllOptionalProduct() throws ProductException {
         List<OptionalProduct> ops = null;
-        try{
+        try {
             ops = em.createNamedQuery("OptionalProduct.findAll", OptionalProduct.class).getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new ProductException("Cannot load optional products");
+        }
+
+        return ops;
+    }
+
+    public OptionalProduct getOptionalProductById(Integer id_optional_product) throws ProductException {
+        OptionalProduct ops = null;
+        try {
+            ops = em.createNamedQuery("OptionalProduct.findById", OptionalProduct.class)
+                    .setParameter(1, id_optional_product).getResultList().get(0);
+        } catch (PersistenceException e) {
+            throw new ProductException("Cannot load optional product");
         }
 
         return ops;

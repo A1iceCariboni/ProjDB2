@@ -4,7 +4,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "optional_product")
-@NamedQueries({ @NamedQuery(name = "OptionalProduct.findAll", query = "SELECT op FROM OptionalProduct op")})
+@NamedQueries({@NamedQuery(name = "OptionalProduct.findAll", query = "SELECT op FROM OptionalProduct op"),
+        @NamedQuery(name = "OptionalProduct.findById", query = "SELECT op FROM OptionalProduct op WHERE op.id = ?1")})
 public class OptionalProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

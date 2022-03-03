@@ -4,7 +4,6 @@ import it.polimi.telcoserviceejb.entities.OptionalProduct;
 import it.polimi.telcoserviceejb.entities.Service;
 import it.polimi.telcoserviceejb.entities.ServicePackage;
 import it.polimi.telcoserviceejb.entities.ValidityPeriod;
-import it.polimi.telcoserviceejb.exceptions.ProductException;
 import it.polimi.telcoserviceejb.exceptions.ServiceException;
 
 import javax.ejb.Stateless;
@@ -59,9 +58,21 @@ public class ServicePackageService {
 
     public List<ServicePackage> getAllServicePackage() throws ServiceException {
         List<ServicePackage> sp = null;
-        try{
+        try {
             sp = em.createNamedQuery("ServicePackage.findAll", ServicePackage.class).getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
+            throw new ServiceException("Cannot load service packages");
+        }
+
+        return sp;
+    }
+
+    public ServicePackage getServicePackageById(Integer id_service_package) throws ServiceException {
+        ServicePackage sp = null;
+        try {
+            sp = em.createNamedQuery("ServicePackage.findById", ServicePackage.class).setParameter(1, id_service_package)
+                    .getResultList().get(0);
+        } catch (PersistenceException e) {
             throw new ServiceException("Cannot load service packages");
         }
 

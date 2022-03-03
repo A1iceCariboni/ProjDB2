@@ -2,9 +2,7 @@ package it.polimi.telcoserviceejb.entities;
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "`order`")
@@ -38,7 +36,7 @@ public class Order {
     private ServicePackage servicePackage;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_val_period")
+    @JoinColumn(name = "id_validity_period")
     private ValidityPeriod validityPeriod;
 
     @ManyToMany

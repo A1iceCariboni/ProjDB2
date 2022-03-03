@@ -3,7 +3,7 @@
 
 <meta charset="ISO-8859-1">
 <link rel="stylesheet" type="text/css" media="all"
-      href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
+      href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}"/>
 <link
         rel="stylesheet"
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
@@ -15,15 +15,67 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+<script src="js/script.js"></script>
 
 <title>Home</title>
 <div align="right" th:if="${session.user != null}">
-    <p th:text="${'Hello, ' + session.user.username }" ></p>
+    <p th:text="${'Hello, ' + session.user.username }"></p>
     <a th:href="@{/Logout}">Logout</a>
 </div>
 <div align="right" th:if="${session.user == null}">
     <a th:href="@{/CheckLogin}">Login or Register</a>
 </div>
+
+<h4>Make order form:</h4>
+<div>
+    <form action="CreateOrder" method="POST">
+        <table>
+            <thead>
+            <tr>
+                <th>Service package</th>
+                <th>Validity period</th>
+                <th>Optional Products</th>
+            </tr>
+            </thead>
+            <tr>
+                <td>
+                    <select id="sp" name="sp" class="select" required>
+                        <option th:each="sp, i :${service_packages}" th:id="|sp_${i.index}|" th:value="${sp.getId()}"
+                                th:text="${sp.getName()}">
+                            Service Package 1
+                        </option>
+                    </select>
+                </td>
+                <td>
+                    <select id="vp" name="vp" class="select-multiple" required>
+                        <option th:each="vp :${val_pers}" th:value="${vp.getId()}"
+                                th:text="|${vp.getMonths()} months / ${vp.getFee()} euros|">12 months / 11.99 euros
+                        </option>
+                    </select>
+                </td>
+                <td id="td_ops">
+                    <select id="ops" name="ops" class="select-multiple" multiple>
+                        <option th:each="op :${ops}" th:value="${op.getId()}"
+                                th:text="|${op.getName()} (${op.getMonthlyFee()} euros)|">optProd1 (10.99 euros)
+                        </option>
+                    </select>
+                </td>
+                <script>
+                    document.getElementById("sp").addEventListener("change", ev => {
+                        let id_sp = parseInt(document.getElementById("sp").value);
+                        console.log("clicked on " + id_sp)
+                        getServicePackages(id_sp, generateBoxesHome);
+                    });
+                    getServicePackages(parseInt(document.getElementById("sp").value), generateBoxesHome);
+                </script>
+            </tr>
+            <tr>
+                <td><input type="submit" value="Confirm"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
 <h4>Available Service Packages:</h4>
 <table>
     <thead>

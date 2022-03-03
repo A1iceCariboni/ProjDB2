@@ -1,7 +1,9 @@
 package it.polimi.telcoserviceweb.controllers;
 
-import com.google.gson.Gson;
-import it.polimi.telcoserviceejb.entities.*;
+import it.polimi.telcoserviceejb.entities.OptionalProduct;
+import it.polimi.telcoserviceejb.entities.Service;
+import it.polimi.telcoserviceejb.entities.ServicePackage;
+import it.polimi.telcoserviceejb.entities.ValidityPeriod;
 import it.polimi.telcoserviceejb.services.OptionalProductService;
 import it.polimi.telcoserviceejb.services.ServicePackageService;
 import it.polimi.telcoserviceejb.services.ServiceService;
@@ -18,7 +20,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class GoToHomePage extends HttpServlet {
     private ServiceService serviceService;
     @EJB(name = "it.polimi.telcoserviceejb.entities.ServicePackageService")
     private ServicePackageService servicePackageService;
-    private Gson gson;
+
     public GoToHomePage() {
         super();
     }

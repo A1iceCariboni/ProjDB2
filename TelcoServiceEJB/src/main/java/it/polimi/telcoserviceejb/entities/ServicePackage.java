@@ -1,13 +1,12 @@
 package it.polimi.telcoserviceejb.entities;
 
 import javax.persistence.*;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "service_package")
-@NamedQueries({ @NamedQuery(name = "ServicePackage.findAll", query = "SELECT sp FROM ServicePackage sp")})
+@NamedQueries({@NamedQuery(name = "ServicePackage.findAll", query = "SELECT sp FROM ServicePackage sp"),
+        @NamedQuery(name = "ServicePackage.findById", query = "SELECT sp FROM ServicePackage sp WHERE sp.id = ?1")})
 public class ServicePackage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
