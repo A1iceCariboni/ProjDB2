@@ -42,6 +42,11 @@ public class GetSalesReport extends HttpServlet {
     private AlertService alertService;
 
 
+    @EJB(name = "it.polimi.expensemanagmentejb.services/OptionalProductService>")
+    private OptionalProductService optionalProductService;
+
+
+
     public GetSalesReport(){super();}
 
     public void init() throws ServletException {
@@ -72,9 +77,7 @@ public class GetSalesReport extends HttpServlet {
         ctx.setVariable("rep_3", 0);
         ctx.setVariable("rep_4", 0);
         ctx.setVariable("rep_5", 0);
-        ctx.setVariable("insolvents", userService.getInsolvents());
-        ctx.setVariable("rejected", orderService.getSuspended());
-        ctx.setVariable("alerts", alertService.getAllAlerts());
+        loadData(response, ctx);
         templateEngine.process(path, ctx, response.getWriter());
     }
 
@@ -159,13 +162,21 @@ public class GetSalesReport extends HttpServlet {
         ctx.setVariable("rep_3", rep_3);
         ctx.setVariable("rep_4", rep_4);
         ctx.setVariable("rep_5", rep_5);
-        ctx.setVariable("insolvents", userService.getInsolvents());
-        ctx.setVariable("rejected", orderService.getSuspended());
-        ctx.setVariable("alerts", alertService.getAllAlerts());
-
+        loadData(response, ctx);
         ctx.setVariable("service_packages", servicePackages);
 
         templateEngine.process(path, ctx, response.getWriter());
+    }
+
+    private void loadData(HttpServletResponse response, WebContext ctx) throws IOException {
+        try {
+            ctx.setVariable("insolvents", userService.getInsolvents());
+            ctx.setVariable("rejected", orderService.getSuspended());
+            ctx.setVariable("alerts", alertService.getAllAlerts());
+            ctx.setVariable("bestseller", optionalProductService.getBestSellers());
+        }catch(Exception e){
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to get data");
+        }
     }
 
 

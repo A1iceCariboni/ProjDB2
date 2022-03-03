@@ -139,6 +139,24 @@
         </tbody>
     </table>
 
+    <h4>Best sellers</h4>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Revenue</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="bs:${bestseller}">
+            <td th:text="${bs.getOptionalProduct().getId()}"></td>
+            <td th:text="${ bs.getOptionalProduct().getName() }"></td>
+            <td th:text="${ bs.getTotalRevenue() }"></td>
+        </tr>
+        </tbody>
+    </table>
+
 
 </div>
 

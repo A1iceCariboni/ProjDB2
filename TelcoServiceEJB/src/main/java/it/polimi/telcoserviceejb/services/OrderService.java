@@ -80,11 +80,12 @@ public class OrderService {
         return ops;
     }
 
-    public List<Order> getSuspended(){
+    public List<Order> getSuspended() throws Exception {
         List<Order> orders = null;
         try{
             orders = em.createNamedQuery("Order.getSuspended", Order.class).getResultList();
-        }catch (PersistenceException ignored){
+        }catch (PersistenceException e){
+            throw new Exception("Couldn't load data");
         }
         return orders;
     }

@@ -1,6 +1,7 @@
 package it.polimi.telcoserviceejb.services;
 
 import it.polimi.telcoserviceejb.entities.OptionalProduct;
+import it.polimi.telcoserviceejb.entities.OptionalProductsReport;
 import it.polimi.telcoserviceejb.exceptions.ProductException;
 
 import javax.ejb.Stateless;
@@ -44,6 +45,16 @@ public class OptionalProductService {
         }
 
         return ops;
+    }
+
+    public List<OptionalProductsReport> getBestSellers() throws ProductException {
+        List<OptionalProductsReport> opr = null;
+        try{
+            opr = em.createNamedQuery("OptionalProductReport.findMax", OptionalProductsReport.class).getResultList();
+        } catch (PersistenceException e) {
+            throw new ProductException("Cannot load optional product");
+        }
+        return opr;
     }
 
 }

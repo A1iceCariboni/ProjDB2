@@ -18,11 +18,12 @@ public class AlertService {
 
     public AlertService(){}
 
-    public List<Alert> getAllAlerts(){
+    public List<Alert> getAllAlerts() throws Exception {
         List<Alert> alerts = null;
         try{
             alerts = em.createNamedQuery("Alert.findAll", Alert.class).getResultList();
         }catch(PersistenceException e){
+            throw new Exception("Couldn't load data");
         }
         return alerts;
     }

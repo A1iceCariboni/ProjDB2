@@ -49,11 +49,12 @@ public class UserService {
 
     }
 
-    public List<User> getInsolvents(){
+    public List<User> getInsolvents() throws Exception {
         List<User> users = null;
         try {
             users = em.createNamedQuery("User.getInsolventUsers", User.class).getResultList();
         } catch (PersistenceException e) {
+            throw new Exception("Couldn't load data");
         }
         return users;
     }
