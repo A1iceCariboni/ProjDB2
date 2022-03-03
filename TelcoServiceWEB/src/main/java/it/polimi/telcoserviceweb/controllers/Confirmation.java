@@ -7,6 +7,7 @@ import it.polimi.telcoserviceejb.entities.ValidityPeriod;
 import it.polimi.telcoserviceejb.exceptions.ProductException;
 import it.polimi.telcoserviceejb.exceptions.ServiceException;
 import it.polimi.telcoserviceejb.services.*;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -20,8 +21,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @WebServlet("/Confirmation")
@@ -54,26 +58,8 @@ public class Confirmation extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        User user = null;
-        Integer id_service_package = null;
-        Integer id_validity_period = null;
-        List<Integer> ids_optional_product = null;
-        try {
-            id_service_package = Integer.parseInt(Arrays.stream(request.getCookies())
-                    .filter(cookie -> cookie.getName().equals("sp")).collect(Collectors.toList()).get(0).getValue());
-            id_validity_period = Integer.parseInt(Arrays.stream(request.getCookies())
-                    .filter(cookie -> cookie.getName().equals("vp")).collect(Collectors.toList()).get(0).getValue());
-            ids_optional_product = Arrays.stream(Arrays.stream(request.getCookies())
-                            .filter(cookie -> cookie.getName().equals("op")).collect(Collectors.toList()).get(0).getValue()
-                            .replaceAll("\\[", "").replaceAll("]", "").split(", ")).filter(x -> !x.equals(""))
-                    .map(Integer::parseInt).collect(Collectors.toList());
-
-            user = (User) request.getSession().getAttribute("user");
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty fields");
-            return;
-        }
+        final Map<String, Object> cookies = getOrderInfo(request);
+        User user = (User) request.getSession().getAttribute("user");
 
         if (user == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "You have to be logged to make an order!");
@@ -81,7 +67,14 @@ public class Confirmation extends HttpServlet {
         }
 
         try {
-            orderService.createOrder(request.getParameter("status_payment"), user.getId(), id_service_package, id_validity_period, ids_optional_product);
+            orderService.createOrder(
+                    request.getParameter("status_payment"),
+                    user.getId(),
+                    (Integer) cookies.get("service_package"),
+                    (Integer) cookies.get("validity_period"),
+                    (List<Integer>) cookies.get("optional_products"),
+                    (Date) cookies.get("start_date_subscription")
+            );
         } catch (ServiceException e) {
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Can't create order");
             return;
@@ -94,37 +87,21 @@ public class Confirmation extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        User user = null;
-        Integer id_service_package = null;
-        Integer id_validity_period = null;
-        List<Integer> ids_optional_product = null;
-
-        // getting the order infos
-        id_service_package = Integer.parseInt(Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals("sp")).collect(Collectors.toList()).get(0).getValue());
-        id_validity_period = Integer.parseInt(Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals("vp")).collect(Collectors.toList()).get(0).getValue());
-        ids_optional_product = Arrays.stream(Arrays.stream(request.getCookies())
-                        .filter(cookie -> cookie.getName().equals("op")).collect(Collectors.toList()).get(0).getValue()
-                        .replaceAll("\\[", "").replaceAll("]", "").split(", ")).filter(x -> !x.equals(""))
-                .map(Integer::parseInt).collect(Collectors.toList());
-
-        user = (User) request.getSession().getAttribute("user");
-
+        final Map<String, Object> cookies = getOrderInfo(request);
 
         String path = "/WEB-INF/Confirmation.html";
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
         try {
-            ServicePackage servicePackage = servicePackageService.getServicePackageById(id_service_package);
-            ValidityPeriod validityPeriod = validityPeriodService.getValidityPeriodById(id_validity_period);
-            List<OptionalProduct> optionalProducts = ids_optional_product.stream().map(id -> {
+            ServicePackage servicePackage = servicePackageService.getServicePackageById((Integer) cookies.get("service_package"));
+            ValidityPeriod validityPeriod = validityPeriodService.getValidityPeriodById((Integer) cookies.get("validity_period"));
+            List<OptionalProduct> optionalProducts = ((List<Integer>) cookies.get("optional_products")).stream().map(id -> {
                 try {
-                    return (OptionalProduct) optionalProductService.getOptionalProductById(id);
+                    return optionalProductService.getOptionalProductById(id);
                 } catch (ProductException e) {
                     e.printStackTrace();
                 }
-                return (OptionalProduct) null;
+                return null;
             }).collect(Collectors.toList());
             Integer total_amount = validityPeriod.getMonths() * (
                     validityPeriod.getFee() +
@@ -135,11 +112,41 @@ public class Confirmation extends HttpServlet {
             ctx.setVariable("service_package", servicePackage);
             ctx.setVariable("validity_period", validityPeriod);
             ctx.setVariable("optional_products", optionalProducts);
+            ctx.setVariable("start_date_subscription", cookies.get("start_date_subscription"));
             ctx.setVariable("total_amount", total_amount);
         } catch (ServiceException e) {
             e.printStackTrace();
         }
         templateEngine.process(path, ctx, response.getWriter());
+    }
+
+    public Map<String, Object> getOrderInfo(HttpServletRequest request) {
+        final Map<String, Object> cookies = new HashMap<>();
+
+        // getting the order infos
+        Arrays.stream(request.getCookies()).forEach(cookie -> {
+            try {
+                switch (cookie.getName()) {
+                    case "sp":
+                        cookies.put("service_package", Integer.parseInt(cookie.getValue()));
+                        break;
+                    case "vp":
+                        cookies.put("validity_period", Integer.parseInt(cookie.getValue()));
+                        break;
+                    case "op":
+                        cookies.put("optional_products", Arrays.stream(cookie.getValue().replaceAll("\\[", "").replaceAll("]", "")
+                                .split(", ")).filter(x -> !x.equals("")).map(Integer::parseInt).collect(Collectors.toList()));
+                        break;
+                    case "sd":
+                        DateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        cookies.put("start_date_subscription", sourceFormat.parse(StringEscapeUtils.escapeJava(cookie.getValue())));
+                        break;
+                }
+            } catch (NumberFormatException | ParseException e) {
+                e.printStackTrace();
+            }
+        });
+        return cookies;
     }
 
     public void destroy() {

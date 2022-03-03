@@ -1,4 +1,5 @@
 package it.polimi.telcoserviceejb.entities;
+import java.sql.Time;
 import java.sql.Timestamp;
 import javax.persistence.*;
 import java.time.Instant;
@@ -24,7 +25,7 @@ public class Order {
     private Integer numberOfFailedPayment;
 
     @Column(name = "start_date_sub")
-    private Date startDateSub;
+    private Timestamp startDateSub;
 
     @Column(name = "creation_date")
     private Timestamp creationDate;
@@ -47,7 +48,7 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "id_optional_product"))
     private List<OptionalProduct> optionalProducts;
 
-    public Order(Double totalValue, String status, Integer numberOfFailedPayment, Date startDateSub, Timestamp creationDate, User user, ServicePackage servicePackage, ValidityPeriod validityPeriod, List<OptionalProduct> optionalProducts) {
+    public Order(Double totalValue, String status, Integer numberOfFailedPayment, Timestamp startDateSub, Timestamp creationDate, User user, ServicePackage servicePackage, ValidityPeriod validityPeriod, List<OptionalProduct> optionalProducts) {
         this.totalValue = totalValue;
         this.status = status;
         this.numberOfFailedPayment = numberOfFailedPayment;
@@ -107,7 +108,7 @@ public class Order {
         return startDateSub;
     }
 
-    public void setStartDateSub(Date startDateSub) {
+    public void setStartDateSub(Timestamp startDateSub) {
         this.startDateSub = startDateSub;
     }
 

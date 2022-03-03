@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <meta charset="ISO-8859-1">
+
 <link rel="stylesheet" type="text/css" media="all"
       href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}"/>
 <link
@@ -35,6 +36,7 @@
                 <th>Service package</th>
                 <th>Validity period</th>
                 <th>Optional Products</th>
+                <th>Starting date of subscription</th>
             </tr>
             </thead>
             <tr>
@@ -60,13 +62,33 @@
                         </option>
                     </select>
                 </td>
+                <td>
+                    <input id="start_date_subscription" type="date" name="start_date_subscription" min="" required>
+                </td>
                 <script>
+                    // in order to have dynamic choosing of optional products or validity periods
                     document.getElementById("sp").addEventListener("change", ev => {
                         let id_sp = parseInt(document.getElementById("sp").value);
                         console.log("clicked on " + id_sp)
                         getServicePackages(id_sp, generateBoxesHome);
                     });
                     getServicePackages(parseInt(document.getElementById("sp").value), generateBoxesHome);
+
+                    // to set the minimum date as today
+                    var today = new Date();
+                    var dd = today.getDate();
+                    var mm = today.getMonth() + 1; //January is 0!
+                    var yyyy = today.getFullYear();
+
+                    if (dd < 10) {
+                        dd = '0' + dd;
+                    }
+
+                    if (mm < 10) {
+                        mm = '0' + mm;
+                    }
+
+                    document.getElementById("start_date_subscription").setAttribute("min", yyyy + '-' + mm + '-' + dd)
                 </script>
             </tr>
             <tr>

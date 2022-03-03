@@ -64,7 +64,7 @@
         <tr th:if="${session.user != null}">
             <td>
                 <form action="Confirmation" method="POST">
-                    <select id="status_payment" name="vp" class="select-multiple" required>
+                    <select id="status_payment" name="status_payment" class="select-multiple" required>
                         <option value="approved">accept</option>
                         <option value="rejected">reject</option>
                     </select>
