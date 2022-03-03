@@ -8,7 +8,8 @@ import java.util.List;
 @Table(name = "user", schema = "db_telco_service")
 @NamedQueries({
 @NamedQuery(name = "User.checkCredentials", query = "SELECT r FROM User r  WHERE r.username = ?1 and r.password = ?2"),
-    @NamedQuery(name = "User.getUserByUsername", query = "SELECT r FROM User r  WHERE r.username = ?1")})
+    @NamedQuery(name = "User.getUserByUsername", query = "SELECT r FROM User r  WHERE r.username = ?1"),
+    @NamedQuery(name = "User.getInsolventUsers", query="SELECT u FROM User u WHERE u.insolvent=true")})
 
 public class User implements Serializable{
     private static final long serialVersionUID = 4688314470343184384L;

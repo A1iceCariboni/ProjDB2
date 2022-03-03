@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<meta charset="ISO-8859-1">
+<link rel="stylesheet" type="text/css" media="all"
+      href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}"/>
+<link
+        rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+/>
+<link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"
+/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+<title>Home</title>
+<div align="right" th:if="${session.user != null}">
+    <p th:text="${'Hello, ' + session.user.username }"></p>
+    <a th:href="@{/Logout}">Logout</a>
+</div>
+<div align="right" th:if="${session.user == null}">
+    <a th:href="@{/CheckLogin}">Login or Register</a>
+</div>
+
+<h4>Order Summary:</h4>
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>Service package</th>
+            <th>Validity period</th>
+            <th>Optional Products</th>
+            <th>Total amount</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${service_package.getName()}"> Nome Package</td>
+            <td th:text="|${validity_period.getMonths()} months per ${validity_period.getFee()} euros|"> 12 months per
+                10.99€
+            </td>
+            <td>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Monthly fee</th>
+                    </tr>
+                    </thead>
+                    <tr th:if="${!optional_products.isEmpty()}" th:each="op : ${optional_products}">
+                        <td th:text="${op.getName()}"></td>
+                        <td th:text="${op.getMonthlyFee()}"></td>
+                    </tr>
+                    <tr th:unless="${!optional_products.isEmpty()}">
+                        <td>None</td>
+                    </tr>
+                </table>
+            </td>
+            <td th:text="|${total_amount} euros|"> 200.53 euros</td>
+        </tr>
+        <tr th:if="${session.user != null}">
+            <td>
+                <form action="Confirmation" method="POST">
+                    <select id="status_payment" name="vp" class="select-multiple" required>
+                        <option value="approved">accept</option>
+                        <option value="rejected">reject</option>
+                    </select>
+                    <input type="submit" value="Pay">
+                </form>
+            </td>
+        </tr>
+        <tr th:unless="${session.user != null}">
+            <td>You have to log in in order to pay for the order</td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

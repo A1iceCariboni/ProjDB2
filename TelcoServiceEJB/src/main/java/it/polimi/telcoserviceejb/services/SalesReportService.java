@@ -36,7 +36,7 @@ public class SalesReportService {
         return i != null ? i : 0;
     }
 
-    public Long getTotalPurchasePerPackageAndVP(Integer idP, Integer idVP) throws ReportException {
+    public Integer getTotalPurchasePerPackageAndVP(Integer idP, Integer idVP) throws ReportException {
         ServicePackage sp = null;
         ValidityPeriod vp = null;
         try {
@@ -49,9 +49,9 @@ public class SalesReportService {
             throw new ReportException("Validity period not in service package");
         }
 
-        Long i = null;
+        Integer i = null;
         try{
-            i = em.createNamedQuery("SalesReport.getTotalNumberPerPackageAndVP", Long.class).setParameter(1, sp).setParameter(2, vp).getSingleResult();
+            i = em.createNamedQuery("SalesReport.getTotalNumberPerPackageAndVP", Integer.class).setParameter(1, sp).setParameter(2, vp).getSingleResult();
         }catch (PersistenceException e){
             throw new ReportException("Cannot find service package");
         }
@@ -59,16 +59,16 @@ public class SalesReportService {
         return i != null ? i : 0;
     }
 
-    public Long getValueNoOptionalProducts(Integer id) throws ReportException {
+    public Double getValueNoOptionalProducts(Integer id) throws ReportException {
         ServicePackage sp = null;
         try {
             sp = em.find(ServicePackage.class, id);
         }catch(PersistenceException e){
             throw new ReportException("Couldn't fetch service package");
         }
-        Long i = null;
+        Double i = null;
         try{
-            i = em.createNamedQuery("SalesReport.valueNoOptProducts", Long.class).setParameter(1, sp).getSingleResult();
+            i = em.createNamedQuery("SalesReport.valueNoOptProducts", Double.class).setParameter(1, sp).getSingleResult();
         }catch (PersistenceException e){
             throw new ReportException("Cannot find service package");
         }
@@ -76,22 +76,39 @@ public class SalesReportService {
         return i != null ? i : 0;
     }
 
-    public Long getValueWithOptionalProducts(Integer id) throws ReportException {
-        Long j = getValueNoOptionalProducts(id);
+    public Double getValueWithOptionalProducts(Integer id) throws ReportException {
+        Double j = getValueNoOptionalProducts(id);
         ServicePackage sp = null;
         try {
             sp = em.find(ServicePackage.class, id);
         }catch(PersistenceException e){
             throw new ReportException("Couldn't fetch service package");
         }
-        Long i = null;
+        Double i = null;
         try{
-            i = em.createNamedQuery("SalesReport.valueWithOptProducts", Long.class).setParameter(1, sp).getSingleResult();
+            i = em.createNamedQuery("SalesReport.valueWithOptProducts", Double.class).setParameter(1, sp).getSingleResult();
         }catch (PersistenceException e){
             throw new ReportException("Cannot find service package");
         }
-        if(i == null) i = Long.valueOf(0);
-        if(j == null) j = Long.valueOf(0);
+        if(i == null) i = (double) 0;
+        if(j == null) j = (double) 0;
         return  i + j;
+    }
+
+    public Double getAvgOptProduct(Integer id) throws ReportException {
+        ServicePackage sp = null;
+        try {
+            sp = em.find(ServicePackage.class, id);
+        }catch(PersistenceException e){
+            throw new ReportException("Couldn't fetch service package");
+        }
+        Double i = null;
+        try{
+            i = em.createNamedQuery("SalesReport.avgNumberOfOpt", Double.class).setParameter(1, sp).getSingleResult();
+        }catch (PersistenceException e){
+            throw new ReportException("Cannot find service package");
+        }
+
+        return i;
     }
 }

@@ -48,4 +48,13 @@ public class UserService {
         throw new NonUniqueResultException("More than one user registered with same credentials");
 
     }
+
+    public List<User> getInsolvents(){
+        List<User> users = null;
+        try {
+            users = em.createNamedQuery("User.getInsolventUsers", User.class).getResultList();
+        } catch (PersistenceException e) {
+        }
+        return users;
+    }
 }

@@ -1,12 +1,11 @@
 package it.polimi.telcoserviceweb.controllers.employee;
 
-import it.polimi.telcoserviceejb.entities.OptionalProduct;
-import it.polimi.telcoserviceejb.entities.Service;
-import it.polimi.telcoserviceejb.entities.ServicePackage;
-import it.polimi.telcoserviceejb.entities.ValidityPeriod;
+import it.polimi.telcoserviceejb.entities.*;
 import it.polimi.telcoserviceejb.exceptions.ReportException;
+import it.polimi.telcoserviceejb.services.OrderService;
 import it.polimi.telcoserviceejb.services.SalesReportService;
 import it.polimi.telcoserviceejb.services.ServicePackageService;
+import it.polimi.telcoserviceejb.services.UserService;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -34,6 +33,13 @@ public class GetSalesReport extends HttpServlet {
     @EJB(name = "it.polimi.expensemanagmentejb.services/SalesReportService")
     private SalesReportService salesReportService;
 
+    @EJB(name = "it.polimi.expensemanagmentejb.services/UserService")
+    private UserService userService;
+
+
+    @EJB(name = "it.polimi.expensemanagmentejb.services/OrderService")
+    private OrderService orderService;
+
 
     public GetSalesReport(){super();}
 
@@ -60,14 +66,21 @@ public class GetSalesReport extends HttpServlet {
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
         ctx.setVariable("service_packages", servicePackages);
-        ctx.setVariable("res", 0);
-
+        ctx.setVariable("rep_1", 0);
+        ctx.setVariable("rep_2", 0);
+        ctx.setVariable("rep_3", 0);
+        ctx.setVariable("rep_4", 0);
+        ctx.setVariable("rep_5", 0);
+        ctx.setVariable("insolvents", userService.getInsolvents());
+        ctx.setVariable("rejected", orderService.getSuspended());
         templateEngine.process(path, ctx, response.getWriter());
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String reportType = null;
-        Long res = Long.valueOf(0);
+        Long rep_1 = 0L;
+        Integer rep_2 = 0;
+        Double rep_3 = (double) 0, rep_4 = (double) 0, rep_5 = (double) 0;
         List<ServicePackage> servicePackages = null;
 
         try {
@@ -78,48 +91,79 @@ public class GetSalesReport extends HttpServlet {
         }
         reportType = StringEscapeUtils.escapeJava(request.getParameter("reportType"));
 
+        Integer idPurch = null;
+        try {
+            idPurch = Integer.parseInt(request.getParameter("sp"));
+            if (idPurch == null) {
+                throw new Exception("Missing or empty fields");
+            }
+        } catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty fields");
+            return;
+        }
         switch(reportType) {
             case "NumberPurchForPack":
-                Integer id = null;
                 try {
-                    id = Integer.parseInt(request.getParameter("pcks"));
-                    if (id == null) {
-                        throw new Exception("Missing or empty fields");
-                    }
-                } catch (Exception e) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty fields");
-                    return;
-                }
-                try {
-                    res = salesReportService.getTotalPurchasePerPackage(id);
+                    rep_1 = salesReportService.getTotalPurchasePerPackage(idPurch);
                 } catch (ReportException e) {
                     response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Not existent service package");
                     return;
                 }
+                break;
             case "NumberPurchForPackAndVP":
-                Integer idPurch = null;
                 Integer idVP = null;
                 try {
-                    idPurch = Integer.parseInt(request.getParameter("pcks"));
-
-                    if (idPurch == null) {
+                    idVP = Integer.parseInt(request.getParameter("vp"));
+                    if (idVP == null) {
                         throw new Exception("Missing or empty fields");
                     }
                 } catch (Exception e) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty fields");
                     return;
                 }
+                try {
+                    rep_2 = salesReportService.getTotalPurchasePerPackageAndVP(idPurch, idVP);
+                } catch (ReportException e) {
+                    response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Not existent service package");
+                    return;
+                }
+                break;
+            case "ValuePurchForPack":
+                try {
+                    rep_3 = salesReportService.getValueNoOptionalProducts(idPurch);
+                    rep_4 = salesReportService.getValueWithOptionalProducts(idPurch);
+                } catch (ReportException e) {
+                    response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Not existent service package");
+                    return;
+                }
+                break;
+
+            case "AvgOptProd":
+                try {
+                    rep_5 = salesReportService.getAvgOptProduct(idPurch);
+                } catch (ReportException e) {
+                    response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Not existent service package");
+                    return;
+                }
+                break;
+
         }
 
         String path = "/WEB-INF/SalesReports.html";
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-        ctx.setVariable("res", res);
+        ctx.setVariable("rep_1", rep_1);
+        ctx.setVariable("rep_2", rep_2);
+        ctx.setVariable("rep_3", rep_3);
+        ctx.setVariable("rep_4", rep_4);
+        ctx.setVariable("rep_5", rep_5);
+        ctx.setVariable("insolvents", userService.getInsolvents());
+        ctx.setVariable("rejected", orderService.getSuspended());
+
         ctx.setVariable("service_packages", servicePackages);
 
         templateEngine.process(path, ctx, response.getWriter());
     }
-
 
 
     public void destory(){}

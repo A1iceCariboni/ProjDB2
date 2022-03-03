@@ -46,22 +46,33 @@
         Name: <input type="text" name="name" required> <br>
         <h5>Select optional products:</h5> <br>
 
-        <select name="ops" class="select-multiple" multiple>
-            <option th:each="op :${ops}" th:value="${op.getId()}" th:text="${op.getId()}">Op</option>
-        </select>
+
+            <select id="ops" name="ops" class="select-multiple" multiple required>
+                <option th:each="op :${ops}" th:value="${op.getId()}"
+                        th:text="|${op.getName()} (${op.getMonthlyFee()} euros)|">12 months / 11.99 euros
+                </option>
+            </select><br>
+
 
         <h5>Select validity period:</h5> <br>
 
-            <select name="vps" class="select-multiple" multiple required>
-                <option th:each="vp :${val_pers}" th:value="${vp.getId()}" th:text="${vp.getId()}">Op</option>
-            </select>
+
+            <select id="vp" name="vp" class="select-multiple" multiple required>
+                <option th:each="vp :${val_pers}" th:value="${vp.getId()}"
+                        th:text="|${vp.getMonths()} months / ${vp.getFee()} euros|">12 months / 11.99 euros
+                </option>
+            </select><br>
 
 
         <h5>Select service:</h5> <br>
 
-        <select name="servs" class="select-multiple" multiple required>
-            <option th:each="s :${services}" th:value="${s.getId()}" th:text="${s.getId()}">Op</option>
-        </select>
+
+            <select id="servs" name="servs" class="select-multiple" multiple required>
+                <option th:each="s :${services}" th:value="${s.getId()}"
+                        th:text="|Id: ${s.getId()} / Type: ${s.getType()} |">Free giga
+                </option>
+            </select><br>
+
         <input type="submit" value="Create service package">
     </form>
         </td>

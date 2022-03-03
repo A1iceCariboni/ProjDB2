@@ -1,11 +1,12 @@
 package it.polimi.telcoserviceejb.entities;
-
+import java.sql.Timestamp;
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.List;
 
 @Entity
 @Table(name = "`order`")
+@NamedQueries({@NamedQuery(name = "Order.getSuspended", query = "SELECT o FROM Order o WHERE o.status = 'rejected'")})
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +26,7 @@ public class Order {
     private Instant startDateSub;
 
     @Column(name = "creation_date")
-    private Instant creationDate;
+    private Timestamp creationDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user")
@@ -40,12 +41,12 @@ public class Order {
     private ValidityPeriod validityPeriod;
 
     @ManyToMany
-    @JoinTable(name = "optional_product_order",
+    @JoinTable(name = "optional_product__order",
             joinColumns = @JoinColumn(name = "id_order"),
             inverseJoinColumns = @JoinColumn(name = "id_optional_product"))
     private List<OptionalProduct> optionalProducts;
 
-    public Order(Double totalValue, String status, Integer numberOfFailedPayment, Instant startDateSub, Instant creationDate, User user, ServicePackage servicePackage, ValidityPeriod validityPeriod, List<OptionalProduct> optionalProducts) {
+    public Order(Double totalValue, String status, Integer numberOfFailedPayment, Instant startDateSub, Timestamp creationDate, User user, ServicePackage servicePackage, ValidityPeriod validityPeriod, List<OptionalProduct> optionalProducts) {
         this.totalValue = totalValue;
         this.status = status;
         this.numberOfFailedPayment = numberOfFailedPayment;
@@ -93,11 +94,11 @@ public class Order {
         this.user = user;
     }
 
-    public Instant getCreationDate() {
+    public Timestamp getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Instant creationDate) {
+    public void setCreationDate(Timestamp creationDate) {
         this.creationDate = creationDate;
     }
 

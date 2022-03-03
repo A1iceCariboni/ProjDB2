@@ -59,4 +59,14 @@ public class OrderService {
         return ops;
     }
 
+    public List<Order> getSuspended(){
+        List<Order> orders = null;
+        try{
+            orders = em.createNamedQuery("Order.getSuspended", Order.class).getResultList();
+        }catch (PersistenceException e){
+
+        }
+        return orders;
+    }
+
 }
