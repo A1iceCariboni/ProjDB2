@@ -16,6 +16,7 @@
         <class>it.polimi.telcoserviceejb.entities.SalesReport</class>
         <class>it.polimi.telcoserviceejb.entities.SalesReportId</class>
         <class>it.polimi.telcoserviceejb.entities.SalesReport</class>
+        <class>it.polimi.telcoserviceejb.entities.Alert</class>
 
     </persistence-unit>
 </persistence>

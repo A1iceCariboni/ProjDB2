@@ -117,6 +117,29 @@
         </tbody>
     </table>
 
+    <h4>List of alerts</h4>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Amount</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="a:${alerts}">
+            <td th:text="${a.getId()}"></td>
+            <td th:text="${ a.getUsername() }"></td>
+            <td th:text="${ a.getEmail() }"></td>
+            <td th:text="${ a.getAmount() }"></td>
+            <td th:text="${ a.getDate() }"></td>
+        </tr>
+        </tbody>
+    </table>
+
+
 </div>
 
 </body>

@@ -2,10 +2,7 @@ package it.polimi.telcoserviceweb.controllers.employee;
 
 import it.polimi.telcoserviceejb.entities.*;
 import it.polimi.telcoserviceejb.exceptions.ReportException;
-import it.polimi.telcoserviceejb.services.OrderService;
-import it.polimi.telcoserviceejb.services.SalesReportService;
-import it.polimi.telcoserviceejb.services.ServicePackageService;
-import it.polimi.telcoserviceejb.services.UserService;
+import it.polimi.telcoserviceejb.services.*;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -41,6 +38,10 @@ public class GetSalesReport extends HttpServlet {
     private OrderService orderService;
 
 
+    @EJB(name = "it.polimi.expensemanagmentejb.services/AlertService")
+    private AlertService alertService;
+
+
     public GetSalesReport(){super();}
 
     public void init() throws ServletException {
@@ -73,6 +74,7 @@ public class GetSalesReport extends HttpServlet {
         ctx.setVariable("rep_5", 0);
         ctx.setVariable("insolvents", userService.getInsolvents());
         ctx.setVariable("rejected", orderService.getSuspended());
+        ctx.setVariable("alerts", alertService.getAllAlerts());
         templateEngine.process(path, ctx, response.getWriter());
     }
 
@@ -159,6 +161,7 @@ public class GetSalesReport extends HttpServlet {
         ctx.setVariable("rep_5", rep_5);
         ctx.setVariable("insolvents", userService.getInsolvents());
         ctx.setVariable("rejected", orderService.getSuspended());
+        ctx.setVariable("alerts", alertService.getAllAlerts());
 
         ctx.setVariable("service_packages", servicePackages);
 
