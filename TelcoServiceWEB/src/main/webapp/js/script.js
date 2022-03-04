@@ -54,6 +54,8 @@ function generateBoxesHome(sp) {
     console.log("GENERATING BOXES FOR sp=", sp["name"]);
     changeValidityPeriodOptions(sp);
     changeOptionalProductsOptions(sp);
+    $(".select-multiple").selectpicker();
+    $('.select-multiple').selectpicker('refresh');
 }
 
 function changeValidityPeriodOptions(sp) {

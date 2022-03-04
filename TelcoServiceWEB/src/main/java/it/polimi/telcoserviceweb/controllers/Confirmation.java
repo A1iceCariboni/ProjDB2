@@ -193,7 +193,7 @@ public class Confirmation extends HttpServlet {
                         break;
                     case "op":
                         cookies.put("optional_products", Arrays.stream(cookie.getValue().replaceAll("\\[", "").replaceAll("]", "")
-                                .split(", ")).filter(x -> !x.equals("")).map(Integer::parseInt).collect(Collectors.toList()));
+                                .split("-")).filter(x -> !x.equals("")).map(Integer::parseInt).collect(Collectors.toList()));
                         break;
                     case "sd":
                         DateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd");

@@ -58,7 +58,7 @@ public class CreateOrder extends HttpServlet {
         boolean submitted_form = request.getParameter("submittedForm") != null && request.getParameter("submittedForm").equals("true");
         String id_service_package = StringEscapeUtils.escapeJava(request.getParameter("sp"));
         String id_validity_period = StringEscapeUtils.escapeJava(request.getParameter("vp"));
-        String ids_optional_product = StringEscapeUtils.escapeJava(request.getParameter("ops"));
+        String ids_optional_product = Arrays.toString(request.getParameterValues("ops")).replaceAll(",", "-").replaceAll(" ", "").replaceAll("\\[", "").replaceAll("]", "");
         String start_date_subscription = StringEscapeUtils.escapeJava(request.getParameter("start_date_subscription"));
 
 
@@ -189,7 +189,7 @@ public class CreateOrder extends HttpServlet {
         cookies.put("validity_period", Integer.parseInt(vp));
         if (op != null && !op.isEmpty()) {
             cookies.put("optional_products", Arrays.stream(op.replaceAll("\\[", "").replaceAll("]", "")
-                    .split(", ")).filter(x -> !x.equals("")).map(Integer::parseInt).collect(Collectors.toList()));
+                    .split("-")).filter(x -> !x.equals("")).map(Integer::parseInt).collect(Collectors.toList()));
         }
         cookies.put("start_date_subscription", (new SimpleDateFormat("yyyy-MM-dd")).parse(StringEscapeUtils.escapeJava(sd)));
 
