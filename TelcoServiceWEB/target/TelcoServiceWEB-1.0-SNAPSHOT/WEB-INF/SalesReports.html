@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" media="all"
+          href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
+    <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"
+    />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <script src="js/script.js"></script>
+
+    <title>Sales Reports Section</title>
+
+
+</head>
+<body>
+<div align="right">
+    <p th:text="${'Hello, ' + session.user.username }" ></p>
+    <a th:href="@{/Logout}">Logout</a>
+</div>
+<div align="left">
+    <a href="GoToHomeEmp">Go Back</a>
+</div>
+<div>
+<h4>Get number of total purchases for package:</h4>
+<form action="GetSalesReport" method="POST">
+    <input type="hidden" id="repId" name="reportType" value="NumberPurchForPack">
+<select name="sp" class="form-select" required>
+    <option th:each="sp :${service_packages}" th:value="${sp.getId()}" th:text="${sp.getName()}">Op</option>
+</select><br><br>
+    <input type="submit" value="Get report">
+</form> <br>
+<p th:text="'Result: ' + ${rep_1}"></p><br>
+
+    <h4>Get number of total purchases for package and validity period:</h4>
+    <form action="GetSalesReport" method="POST">
+        <input type="hidden" id="repId1" name="reportType" value="NumberPurchForPackAndVP">
+        <select name="sp" id="sp" class="form-select" required>
+            <option th:each="sp, i :${service_packages}" th:id="|sp_${i.index}|" th:value="${sp.getId()}" th:text="${sp.getName()}">Op</option>
+        </select><br><br>
+
+        <select name="vp" id="vp" class="form-select" required>
+            <option th:each="vp :${val_pers}" th:value="${vp.getId()}" th:text="|${vp.getMonths()} months / ${vp.getFee()} euros|">Op</option>
+        </select><br><br>
+        <script>
+            document.getElementById("sp").addEventListener("change", ev => {
+                let id_sp = parseInt(document.getElementById("sp").value);
+                console.log("clicked on " + id_sp)
+                getServicePackages(id_sp, generateBoxesHome);
+            });
+            getServicePackages(parseInt(document.getElementById("sp").value), generateBoxesHome);
+        </script>
+        <input type="submit" value="Get report">
+    </form> <br>
+    <p th:text="'Result: ' + ${rep_2}"></p><br>
+
+    <h4>Get value of sales purchases for package:</h4>
+    <form action="GetSalesReport" method="POST">
+        <input type="hidden" id="repId2" name="reportType" value="ValuePurchForPack">
+        <select name="sp" class="form-select" required>
+            <option th:each="sp :${service_packages}" th:value="${sp.getId()}" th:text="${sp.getName()}">Op</option>
+        </select><br><br>
+        <input type="submit" value="Get report">
+    </form> <br>
+    <p th:text="'Result without optional products: ' + ${rep_3}"></p><br>
+    <p th:text="'Result with optional products: ' + ${rep_4}"></p><br>
+
+    <h4>Get average number of optional products sold with package:</h4>
+    <form action="GetSalesReport" method="POST">
+        <input type="hidden" id="repId3" name="reportType" value="AvgOptProd">
+        <select name="sp" class="form-select" required>
+            <option th:each="sp :${service_packages}" th:value="${sp.getId()}" th:text="${sp.getName()}">Op</option>
+        </select><br><br>
+        <input type="submit" value="Get report">
+    </form> <br>
+    <p th:text="'Result: ' + ${rep_5}"></p><br>
+
+    <h4>List of insolvent users</h4>
+    <table>
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${insolvents}">
+            <td th:text="${user.getUsername()}"></td>
+            <td th:text="${user.getEmail()}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <h4>List of suspended orders</h4>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Creation date</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="o:${rejected}">
+            <td th:text="${o.getId()}"></td>
+            <td th:text="${o.getCreationDate()}"></td>
+
+        </tr>
+        </tbody>
+    </table>
+
+    <h4>List of alerts</h4>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Amount</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="a:${alerts}">
+            <td th:text="${a.getId()}"></td>
+            <td th:text="${ a.getUsername() }"></td>
+            <td th:text="${ a.getEmail() }"></td>
+            <td th:text="${ a.getAmount() }"></td>
+            <td th:text="${ a.getDate() }"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h4>Best sellers</h4>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Revenue</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="bs:${bestseller}">
+            <td th:text="${bs.getOptionalProduct().getId()}"></td>
+            <td th:text="${ bs.getOptionalProduct().getName() }"></td>
+            <td th:text="${ bs.getTotalRevenue() }"></td>
+        </tr>
+        </tbody>
+    </table>
+
+
+</div>
+
+</body>
+</html>

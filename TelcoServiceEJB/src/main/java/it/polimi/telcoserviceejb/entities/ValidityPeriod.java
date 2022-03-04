@@ -17,9 +17,9 @@ public class ValidityPeriod {
     private Integer months;
 
     @Column(name = "fee")
-    private Integer fee;
+    private Float fee;
 
-    public ValidityPeriod(Integer months, Integer fee) {
+    public ValidityPeriod(Integer months, Float fee) {
         this.months = months;
         this.fee = fee;
     }
@@ -28,11 +28,11 @@ public class ValidityPeriod {
 
     }
 
-    public Integer getFee() {
+    public Float getFee() {
         return fee;
     }
 
-    public void setFee(Integer fee) {
+    public void setFee(Float fee) {
         this.fee = fee;
     }
 

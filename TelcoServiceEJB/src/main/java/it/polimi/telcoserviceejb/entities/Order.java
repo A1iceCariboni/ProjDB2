@@ -1,5 +1,4 @@
 package it.polimi.telcoserviceejb.entities;
-import java.sql.Time;
 import java.sql.Timestamp;
 import javax.persistence.*;
 import java.time.Instant;
@@ -8,7 +7,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "`order`")
-@NamedQueries({@NamedQuery(name = "Order.getSuspended", query = "SELECT o FROM Order o WHERE o.status = 'rejected'")})
+@NamedQueries({@NamedQuery(name = "Order.getSuspended", query = "SELECT o FROM Order o WHERE o.status = 'rejected'"),
+        @NamedQuery(name = "Order.getOrderById", query = "SELECT o FROM Order o WHERE o.id = ?1")})
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +16,7 @@ public class Order {
     private Integer id;
 
     @Column(name = "total_value")
-    private Double totalValue;
+    private Float totalValue;
 
     @Column(name = "status", length = 45)
     private String status;
@@ -25,7 +25,7 @@ public class Order {
     private Integer numberOfFailedPayment;
 
     @Column(name = "start_date_sub")
-    private Timestamp startDateSub;
+    private Date startDateSub;
 
     @Column(name = "creation_date")
     private Timestamp creationDate;
@@ -48,7 +48,7 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "id_optional_product"))
     private List<OptionalProduct> optionalProducts;
 
-    public Order(Double totalValue, String status, Integer numberOfFailedPayment, Timestamp startDateSub, Timestamp creationDate, User user, ServicePackage servicePackage, ValidityPeriod validityPeriod, List<OptionalProduct> optionalProducts) {
+    public Order(Float totalValue, String status, Integer numberOfFailedPayment, Date startDateSub, Timestamp creationDate, User user, ServicePackage servicePackage, ValidityPeriod validityPeriod, List<OptionalProduct> optionalProducts) {
         this.totalValue = totalValue;
         this.status = status;
         this.numberOfFailedPayment = numberOfFailedPayment;
@@ -108,7 +108,7 @@ public class Order {
         return startDateSub;
     }
 
-    public void setStartDateSub(Timestamp startDateSub) {
+    public void setStartDateSub(Date startDateSub) {
         this.startDateSub = startDateSub;
     }
 
@@ -128,11 +128,11 @@ public class Order {
         this.status = status;
     }
 
-    public Double getTotalValue() {
+    public Float getTotalValue() {
         return totalValue;
     }
 
-    public void setTotalValue(Double totalValue) {
+    public void setTotalValue(Float totalValue) {
         this.totalValue = totalValue;
     }
 
@@ -142,5 +142,21 @@ public class Order {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", totalValue=" + totalValue +
+                ", status='" + status + '\'' +
+                ", numberOfFailedPayment=" + numberOfFailedPayment +
+                ", startDateSub=" + startDateSub +
+                ", creationDate=" + creationDate +
+                ", user=" + user +
+                ", servicePackage=" + servicePackage +
+                ", validityPeriod=" + validityPeriod +
+                ", optionalProducts=" + optionalProducts +
+                '}';
     }
 }

@@ -38,8 +38,9 @@
         </thead>
         <tbody>
         <tr>
-            <td th:text="${service_package.getName()}"> Nome Package</td>
-            <td th:text="|${validity_period.getMonths()} months per ${validity_period.getFee()} euros|"> 12 months per
+            <td th:text="${order.getServicePackage().getName()}"> Nome Package</td>
+            <td th:text="|${order.getValidityPeriod().getMonths()} months per ${order.getValidityPeriod().getFee()} euros|"> 12
+                months per
                 10.99€
             </td>
             <td>
@@ -50,16 +51,16 @@
                         <th>Monthly fee</th>
                     </tr>
                     </thead>
-                    <tr th:if="${!optional_products.isEmpty()}" th:each="op : ${optional_products}">
+                    <tr th:if="${!order.getOptionalProducts().isEmpty()}" th:each="op : ${order.getOptionalProducts()}">
                         <td th:text="${op.getName()}"></td>
                         <td th:text="${op.getMonthlyFee()}"></td>
                     </tr>
-                    <tr th:unless="${!optional_products.isEmpty()}">
+                    <tr th:unless="${!order.getOptionalProducts().isEmpty()}">
                         <td>None</td>
                     </tr>
                 </table>
             </td>
-            <td th:text="|${total_amount} euros|"> 200.53 euros</td>
+            <td th:text="|${order.getTotalValue()} euros|"> 200.53 euros</td>
         </tr>
         <tr th:if="${session.user != null}">
             <td>

@@ -1,9 +1,6 @@
 package it.polimi.telcoserviceweb.controllers;
 
-import it.polimi.telcoserviceejb.entities.OptionalProduct;
-import it.polimi.telcoserviceejb.entities.ServicePackage;
-import it.polimi.telcoserviceejb.entities.User;
-import it.polimi.telcoserviceejb.entities.ValidityPeriod;
+import it.polimi.telcoserviceejb.entities.*;
 import it.polimi.telcoserviceejb.exceptions.ProductException;
 import it.polimi.telcoserviceejb.exceptions.ServiceException;
 import it.polimi.telcoserviceejb.services.*;
@@ -14,6 +11,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import javax.ejb.EJB;
+import javax.persistence.PersistenceException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -87,15 +85,70 @@ public class Confirmation extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        final Map<String, Object> cookies = getOrderInfo(request);
+        /* Accessed if:
+         * - cookie order_to_see with id_order
+         * - cookies of the partial order
+         */
+        User user = (User) request.getSession().getAttribute("user");
+        Order order;
+
+        try {
+            if (user == null) {
+                System.out.println("CONFIRMATION: not logged COOKIE");
+                // if not logged
+                order = generateOrderFromCookies(request);
+            } else {
+                // if logged
+                try {
+                    order = getOrderFromIdCookie(request);
+                    System.out.println("CONFIRMATION: logged and ID");
+                } catch (PersistenceException e) {
+                    order = generateOrderFromCookies(request);
+                    System.out.println("CONFIRMATION: logged and COOKIE");
+                }
+            }
+
+            System.out.println(order);
+        } catch (ServiceException | PersistenceException e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No orders to show");
+            return;
+        }
 
         String path = "/WEB-INF/Confirmation.html";
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-        try {
-            ServicePackage servicePackage = servicePackageService.getServicePackageById((Integer) cookies.get("service_package"));
-            ValidityPeriod validityPeriod = validityPeriodService.getValidityPeriodById((Integer) cookies.get("validity_period"));
-            List<OptionalProduct> optionalProducts = ((List<Integer>) cookies.get("optional_products")).stream().map(id -> {
+
+        ctx.setVariable("order", order);
+
+        /*ctx.setVariable("service_package", servicePackage);
+        ctx.setVariable("validity_period", validityPeriod);
+        ctx.setVariable("optional_products", optionalProducts);
+        ctx.setVariable("start_date_subscription", cookies.get("start_date_subscription"));
+        ctx.setVariable("total_amount", total_amount);*/
+        templateEngine.process(path, ctx, response.getWriter());
+    }
+
+    public Order getOrderFromIdCookie(HttpServletRequest request) throws PersistenceException {
+        final int[] id_order = {0};
+        Arrays.stream(request.getCookies()).forEach(cookie -> {
+            if ("order_to_see".equals(cookie.getName())) {
+                id_order[0] = Integer.parseInt(cookie.getValue());
+            }
+        });
+        System.out.println("getOrderFromIdCookie");
+        return orderService.getOrderById(id_order[0]);
+    }
+
+    public Order generateOrderFromCookies(HttpServletRequest request) throws ServiceException {
+        Map<String, Object> cookies = getOrderInfo(request);
+        // retrieving data to show order
+        User user = (User) request.getSession().getAttribute("user");
+        ServicePackage servicePackage = servicePackageService.getServicePackageById((Integer) cookies.get("service_package"));
+        ValidityPeriod validityPeriod = validityPeriodService.getValidityPeriodById((Integer) cookies.get("validity_period"));
+        List<OptionalProduct> optionalProducts = new ArrayList<>();
+        if (cookies.get("optional_products") != null) {
+            optionalProducts = ((List<Integer>) cookies.get("optional_products")).stream().map(id -> {
                 try {
                     return optionalProductService.getOptionalProductById(id);
                 } catch (ProductException e) {
@@ -103,21 +156,24 @@ public class Confirmation extends HttpServlet {
                 }
                 return null;
             }).collect(Collectors.toList());
-            Integer total_amount = validityPeriod.getMonths() * (
-                    validityPeriod.getFee() +
-                            optionalProducts.stream().map(OptionalProduct::getMonthlyFee).reduce(0, Integer::sum)
-            );
-
-            // TODO add date of subscription
-            ctx.setVariable("service_package", servicePackage);
-            ctx.setVariable("validity_period", validityPeriod);
-            ctx.setVariable("optional_products", optionalProducts);
-            ctx.setVariable("start_date_subscription", cookies.get("start_date_subscription"));
-            ctx.setVariable("total_amount", total_amount);
-        } catch (ServiceException e) {
-            e.printStackTrace();
         }
-        templateEngine.process(path, ctx, response.getWriter());
+        float total_amount = validityPeriod.getMonths() * validityPeriod.getFee();
+        for (OptionalProduct op : optionalProducts) {
+            total_amount += validityPeriod.getMonths() * op.getMonthlyFee();
+        }
+
+        System.out.println("generateOrderFromCookies");
+        return new Order(
+                total_amount,
+                "not_created",
+                0,
+                (Date) cookies.get("start_date_subscription"),
+                null,
+                user,
+                servicePackage,
+                validityPeriod,
+                optionalProducts
+        );
     }
 
     public Map<String, Object> getOrderInfo(HttpServletRequest request) {

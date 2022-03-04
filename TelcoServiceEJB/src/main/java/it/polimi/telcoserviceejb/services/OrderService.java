@@ -22,7 +22,7 @@ public class OrderService {
     public OrderService() {
     }
 
-    public void createOrder(String status, Integer id_user, Integer id_service_package, Integer id_validity_period, List<Integer> optionalProducts, Date start_date_subscription) throws ServiceException {
+    public Integer createOrder(String status, Integer id_user, Integer id_service_package, Integer id_validity_period, List<Integer> optionalProducts, Date start_date_subscription) throws ServiceException {
         Order o = new Order();
 
         o.setStatus(status);
@@ -51,22 +51,25 @@ public class OrderService {
         // linking starting subscription date
         o.setStartDateSub(new Timestamp(start_date_subscription.getTime()));
 
-        /*// linking optional products
+        // linking optional products
         try {
-            if(optionalProducts.isEmpty()){
+            if (optionalProducts == null || optionalProducts.isEmpty()) {
                 o.setOptionalProducts(new ArrayList<>());
             } else {
                 List<OptionalProduct> l = new ArrayList<>();
-                for(int id : optionalProducts){
+                for (int id : optionalProducts) {
                     l.add(em.find(OptionalProduct.class, id));
                 }
                 o.setOptionalProducts(l);
             }
         } catch (PersistenceException e) {
             throw new ServiceException("Couldn't fetch Optional Products");
-        }*/
+        }
 
         em.persist(o);
+        em.flush();
+        em.refresh(o);
+        return o.getId();
     }
 
     public List<OptionalProduct> getAllOptionalProduct() throws ProductException {
@@ -82,12 +85,24 @@ public class OrderService {
 
     public List<Order> getSuspended() throws Exception {
         List<Order> orders = null;
-        try{
+        try {
             orders = em.createNamedQuery("Order.getSuspended", Order.class).getResultList();
-        }catch (PersistenceException e){
+        } catch (PersistenceException e) {
             throw new Exception("Couldn't load data");
         }
         return orders;
+    }
+
+    public Order getOrderById(int id_order) throws PersistenceException {
+        try {
+            Order order = em.createNamedQuery("Order.getOrderById", Order.class).setParameter(1, id_order)
+                    .getResultList().get(0);
+            System.out.println(order);
+            em.refresh(order);
+            return order;
+        } catch (PersistenceException e) {
+            throw new PersistenceException("Couldn't load data");
+        }
     }
 
 }

@@ -89,10 +89,14 @@
                     }
 
                     document.getElementById("start_date_subscription").setAttribute("min", yyyy + '-' + mm + '-' + dd)
+                    document.getElementById("start_date_subscription").setAttribute("value", today)
                 </script>
             </tr>
             <tr>
-                <td><input type="submit" value="Confirm"></td>
+                <td>
+                    <input type="hidden" name="submittedForm" value="true">
+                    <input type="submit" value="Confirm">
+                </td>
             </tr>
         </table>
     </form>

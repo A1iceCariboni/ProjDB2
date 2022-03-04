@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <link rel="stylesheet" type="text/css" media="all"
+          href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
+    <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+    <title>Login page</title>
+</head>
+<body>
+<h1>Welcome to the roba temporanea schifosa</h1>
+<table>
+<tr>
+    <td>
+        <form action="CheckRegistration" method="POST">
+            Username: <input type="text" name="username" required> <br>
+            Email: <input type="text" name="email" required> <br>
+            Password: <input type="password" name="pwd" required><br>
+            <input type="submit" value="Register">
+            <p th:text=" ${msg}"></p>
+        </form>
+    </td>
+    <td>
+        <form action="CheckLogin" method="POST">
+            Username: <input type="text" name="username" required> <br>
+            Password: <input type="password" name="pwd" required><br>
+            <input type="submit" value="Login">
+            <p th:text=" ${errorMsg}"></p>
+        </form>
+    </td>
+</tr>
+</table>
+<div>
+    <a href="Home">Enter without logging in</a><br>
+    <a href="CheckLoginEmployee">Login as employee</a>
+</div>
+</body>
+</html>

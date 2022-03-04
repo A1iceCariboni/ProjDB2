@@ -1,7 +1,9 @@
 package it.polimi.telcoserviceweb.controllers;
 
 import it.polimi.telcoserviceejb.entities.User;
+import it.polimi.telcoserviceejb.exceptions.ServiceException;
 import it.polimi.telcoserviceejb.services.*;
+import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -16,13 +18,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.text.SimpleDateFormat;
 
+
+// TODO: create order in waiting state? cookie solo per non loggati.
+//  distingui casi in CONFIRMATION e fai fare solo pagamenti in confirmation oppure
+//  redirect alla pagina di login
 
 @WebServlet("/CreateOrder")
 public class CreateOrder extends HttpServlet {
@@ -54,50 +59,143 @@ public class CreateOrder extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User user = (User) request.getSession().getAttribute("user");
+        boolean submitted_form = request.getParameter("submittedForm") != null && request.getParameter("submittedForm").equals("true");
         String id_service_package = StringEscapeUtils.escapeJava(request.getParameter("sp"));
         String id_validity_period = StringEscapeUtils.escapeJava(request.getParameter("vp"));
         String ids_optional_product = StringEscapeUtils.escapeJava(request.getParameter("ops"));
         String start_date_subscription = StringEscapeUtils.escapeJava(request.getParameter("start_date_subscription"));
 
-        // check if the values are valid
-        try {
-            System.out.println(id_service_package);
-            Integer.parseInt(id_service_package);
 
-            System.out.println(id_validity_period);
-            Integer.parseInt(id_validity_period);
+        if (user != null) {
+            // logged: create order!
+            Map<String, Object> cookies;
 
-            System.out.println(ids_optional_product);
-            if (ids_optional_product != null && !ids_optional_product.equals("null") && !ids_optional_product.isEmpty()) {
-                Arrays.stream(ids_optional_product.split(",")).map(Integer::parseInt);
-                ids_optional_product = ids_optional_product.replaceAll("\\[", "").replaceAll("]", "");
+            // retrieve info
+            try {
+                if (submitted_form) {
+                    // logged and submitted form: retrieve info from form
+                    cookies = generateCookieMap(id_service_package, id_validity_period, ids_optional_product, start_date_subscription);
+                } else {
+                    // logged and no submission: retrieve info from cookies
+                    cookies = getOrderInfoCookie(request);
+                }
+
+                System.out.println(cookies);
+            } catch (ParseException | NumberFormatException e) {
+                e.printStackTrace();
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Not able to retrieve order infos");
+                return;
             }
 
-            System.out.println(start_date_subscription);
-            new SimpleDateFormat("yyyy-MM-dd").parse(start_date_subscription);
+            // create order and create view order cookie
+            try {
+                Integer id_order = orderService.createOrder(
+                        "waiting",
+                        user.getId(),
+                        (Integer) cookies.get("service_package"),
+                        (Integer) cookies.get("validity_period"),
+                        (List<Integer>) cookies.get("optional_products"),
+                        (Date) cookies.get("start_date_subscription")
+                );
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty fields");
-            return;
+                makeOrderCookieExpire(request, response);
+                response.addCookie(new Cookie("order_to_see", id_order.toString()));
+            } catch (ServiceException e) {
+                e.printStackTrace();
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Can't create order");
+                return;
+            }
+        } else {
+            // not logged: generate cookie if necessary
+            if (submitted_form) {
+                // not logged and submitted form: create cookies
+                System.out.println(id_service_package);
+                System.out.println(id_validity_period);
+                System.out.println(ids_optional_product);
+                System.out.println(start_date_subscription);
+
+                // doesn't verify data because it could be easily manipulated (will be stored in cookies) and
+                // because it's checked before issuing the order
+                Cookie c_sp = new Cookie("sp", id_service_package);
+                Cookie c_vp = new Cookie("vp", id_validity_period);
+                Cookie c_op = new Cookie("op", ids_optional_product);
+                Cookie c_sd = new Cookie("sd", start_date_subscription);
+
+                response.addCookie(c_sp);
+                response.addCookie(c_vp);
+                response.addCookie(c_op);
+                response.addCookie(c_sd);
+            } else {
+                // not logged and no submission: error
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Creating order with no cookies and no submission");
+                return;
+            }
         }
-
-        Cookie c_sp = new Cookie("sp", id_service_package);
-        Cookie c_vp = new Cookie("vp", id_validity_period);
-        Cookie c_op = new Cookie("op", ids_optional_product);
-        Cookie c_sd = new Cookie("sd", start_date_subscription);
-
-        response.addCookie(c_sp);
-        response.addCookie(c_vp);
-        response.addCookie(c_op);
-        response.addCookie(c_sd);
 
         String path;
         path = getServletContext().getContextPath() + "/Confirmation";
         response.sendRedirect(path);
-        // TODO: create order in waiting state? cookie solo per non loggati.
-        //  distingui casi in CONFIRMATION e fai fare solo pagamenti in confirmation oppure
-        //  redirect alla pagina di login
+    }
+
+    /**
+     * makes the sp, vp, op, sd cookies expire (used after the creation of the order)
+     */
+    public void makeOrderCookieExpire(HttpServletRequest request, HttpServletResponse response) {
+        Arrays.stream(request.getCookies()).forEach(cookie -> {
+            switch (cookie.getName()) {
+                case "sp":
+                case "vp":
+                case "op":
+                case "sd":
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
+                    break;
+            }
+        });
+    }
+
+    /**
+     * returns the map of the order info from the cookies
+     */
+    public Map<String, Object> getOrderInfoCookie(HttpServletRequest request) throws ParseException {
+        String[] ids = new String[4];
+
+        // getting the order infos
+        Arrays.stream(request.getCookies()).forEach(cookie -> {
+            switch (cookie.getName()) {
+                case "sp":
+                    ids[0] = cookie.getValue();
+                    break;
+                case "vp":
+                    ids[1] = cookie.getValue();
+                    break;
+                case "op":
+                    ids[2] = cookie.getValue();
+                    break;
+                case "sd":
+                    ids[3] = cookie.getValue();
+                    break;
+            }
+        });
+        return generateCookieMap(ids[0], ids[1], ids[2], ids[3]);
+    }
+
+    /**
+     * generates the map of the order info from
+     */
+    public Map<String, Object> generateCookieMap(String sp, String vp, String op, String sd) throws ParseException, NumberFormatException {
+        final Map<String, Object> cookies = new HashMap<>();
+
+        cookies.put("service_package", Integer.parseInt(sp));
+        cookies.put("validity_period", Integer.parseInt(vp));
+        if (op != null && !op.isEmpty()) {
+            cookies.put("optional_products", Arrays.stream(op.replaceAll("\\[", "").replaceAll("]", "")
+                    .split(", ")).filter(x -> !x.equals("")).map(Integer::parseInt).collect(Collectors.toList()));
+        }
+        cookies.put("start_date_subscription", (new SimpleDateFormat("yyyy-MM-dd")).parse(StringEscapeUtils.escapeJava(sd)));
+
+        return cookies;
     }
 
     public void destroy() {
