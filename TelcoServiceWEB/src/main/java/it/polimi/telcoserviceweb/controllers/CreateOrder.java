@@ -136,6 +136,10 @@ public class CreateOrder extends HttpServlet {
         response.sendRedirect(path);
     }
 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request, response);
+    }
+
     /**
      * makes the sp, vp, op, sd cookies expire (used after the creation of the order)
      */

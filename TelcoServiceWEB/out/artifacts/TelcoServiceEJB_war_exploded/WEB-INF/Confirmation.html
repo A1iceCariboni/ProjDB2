@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 
 <meta charset="ISO-8859-1">
 <link
@@ -20,7 +20,7 @@
 <title>Home</title>
 <div align="right" th:if="${session.user != null}">
     <p th:text="${'Hello, ' + session.user.username }"></p>
-    <a th:href="@{/Logout}">Logout</a>
+    <a th:href="@{/Logout}">Logout</a> or <a th:href="@{/Home}">Return To Home</a>
 </div>
 <div align="right" th:if="${session.user == null}">
     <a th:href="@{/CheckLogin}">Login or Register</a>

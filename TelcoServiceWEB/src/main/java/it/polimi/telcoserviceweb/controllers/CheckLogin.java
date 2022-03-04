@@ -14,10 +14,12 @@ import javax.persistence.NonUniqueResultException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 
 @WebServlet("/CheckLogin")
@@ -75,8 +77,14 @@ public class CheckLogin extends HttpServlet{
             path = "/index.html";
             templateEngine.process(path, ctx, response.getWriter());
         } else {
+            if(Arrays.stream(request.getCookies()).map(Cookie::getName).filter(s -> s.equals("op") || s.equals("sd") || s.equals("sp") || s.equals("vp")).count() == 4){
+                // if there are all the cookies to do the order, redirect to the Confirmation page
+                path = getServletContext().getContextPath() + "/CreateOrder";
+            } else
+            {
+                path = getServletContext().getContextPath() + "/Home";
+            }
             request.getSession().setAttribute("user", user);
-            path = getServletContext().getContextPath() + "/Home";
             response.sendRedirect(path);
         }
 
