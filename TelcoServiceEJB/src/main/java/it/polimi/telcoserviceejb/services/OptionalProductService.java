@@ -19,7 +19,7 @@ public class OptionalProductService {
     public OptionalProductService() {
     }
 
-    public void createOptionalProduct(String name, Integer monthlyfee){
+    public void createOptionalProduct(String name, Float monthlyfee){
         OptionalProduct op = new OptionalProduct(name, monthlyfee);
         em.persist(op);
     }

@@ -98,7 +98,7 @@ public class Confirmation extends HttpServlet {
                     // when user did an order but wasn't logged
                     order = generateOrderFromCookies(request);
                     System.out.println("CONFIRMATION: logged and COOKIE");
-                } catch (PersistenceException | IndexOutOfBoundsException e) {
+                } catch (PersistenceException | IndexOutOfBoundsException | ServiceException e) {
                     // TODO: check for the owning of the order by the user issuing the payment
                     order = getOrderFromIdCookie(request);
                     System.out.println("CONFIRMATION: logged and ID");

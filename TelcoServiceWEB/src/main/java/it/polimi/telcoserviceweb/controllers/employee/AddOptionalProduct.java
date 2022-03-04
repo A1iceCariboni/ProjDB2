@@ -56,7 +56,7 @@ public class AddOptionalProduct extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty fields");
             return;
         }
-        opService.createOptionalProduct(name, Integer.parseInt(strFee));
+        opService.createOptionalProduct(name, Float.parseFloat(strFee));
         String path;
         path = getServletContext().getContextPath() + "/GoToHomeEmp";
         response.sendRedirect(path);

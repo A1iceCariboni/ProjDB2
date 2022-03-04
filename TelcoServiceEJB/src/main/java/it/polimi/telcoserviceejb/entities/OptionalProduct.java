@@ -16,21 +16,21 @@ public class OptionalProduct {
     private String name;
 
     @Column(name = "monthly_fee")
-    private Integer monthlyFee;
+    private Float monthlyFee;
 
     public OptionalProduct() {
     }
 
-    public OptionalProduct(String name, Integer monthlyFee) {
+    public OptionalProduct(String name, Float monthlyFee) {
         this.name = name;
         this.monthlyFee = monthlyFee;
     }
 
-    public Integer getMonthlyFee() {
+    public Float getMonthlyFee() {
         return monthlyFee;
     }
 
-    public void setMonthlyFee(Integer monthlyFee) {
+    public void setMonthlyFee(Float monthlyFee) {
         this.monthlyFee = monthlyFee;
     }
 

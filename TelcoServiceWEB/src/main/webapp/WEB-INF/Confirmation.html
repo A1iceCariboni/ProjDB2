@@ -40,7 +40,8 @@
         <tbody>
         <tr>
             <td th:text="${order.getServicePackage().getName()}"> Nome Package</td>
-            <td th:text="|${order.getValidityPeriod().getMonths()} months per ${order.getValidityPeriod().getFee()} euros|"> 12
+            <td th:text="|${order.getValidityPeriod().getMonths()} months per ${order.getValidityPeriod().getFee()} euros|">
+                12
                 months per
                 10.99€
             </td>
@@ -65,13 +66,18 @@
             <td th:text="|${order.getStatus()} (${order.getNumberOfFailedPayment()})|"></td>
         </tr>
         <tr th:if="${session.user != null}">
-            <td>
+            <td th:if="${order.getStatus().equals('waiting') || order.getStatus().equals('rejected')}">
                 <form action="Confirmation" method="POST">
                     <select id="status_payment" name="status_payment" class="select-multiple" required>
                         <option value="approved">accept</option>
                         <option value="rejected">reject</option>
                     </select>
                     <input type="submit" value="Pay">
+                </form>
+            </td>
+            <td th:if="${order.getStatus().equals('not_created')}">
+                <form action="CreateOrder" method="POST">
+                    <input type="submit" value="Confirm">
                 </form>
             </td>
         </tr>

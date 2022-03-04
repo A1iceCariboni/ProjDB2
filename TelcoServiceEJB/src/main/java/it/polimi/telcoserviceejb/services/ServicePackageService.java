@@ -72,7 +72,7 @@ public class ServicePackageService {
         try {
             sp = em.createNamedQuery("ServicePackage.findById", ServicePackage.class).setParameter(1, id_service_package)
                     .getResultList().get(0);
-        } catch (PersistenceException e) {
+        } catch (PersistenceException | IndexOutOfBoundsException e) {
             throw new ServiceException("Cannot load service packages");
         }
 
