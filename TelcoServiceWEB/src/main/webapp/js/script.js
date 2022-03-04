@@ -1,3 +1,31 @@
+function initHome() {
+    // in order to have dynamic choosing of optional products or validity periods
+    document.getElementById("sp").addEventListener("change", ev => {
+        let id_sp = parseInt(document.getElementById("sp").value);
+        console.log("clicked on " + id_sp)
+        getServicePackages(id_sp, generateBoxesHome);
+    });
+    getServicePackages(parseInt(document.getElementById("sp").value), generateBoxesHome);
+
+    // to set the minimum date as today
+    var today = new Date();
+
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+
+    document.getElementById("start_date_subscription").setAttribute("min", yyyy + '-' + mm + '-' + dd)
+    document.getElementById("start_date_subscription").setAttribute("value", yyyy + '-' + mm + '-' + dd)
+}
+
 function getServicePackages(id_service_package, func_parseServicePackage) {
     r = new XMLHttpRequest();
     r.onreadystatechange = (function () {
@@ -17,8 +45,7 @@ function getServicePackages(id_service_package, func_parseServicePackage) {
     });
 
     r.open("POST", "/TelcoServiceEJB_war_exploded/GetServicePackages");
-    r.setRequestHeader('Content-type',
-        'application/x-www-form-urlencoded');
+    r.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     r.send("id_service_package=" + id_service_package);
     console.log("requesting service package...");
 }
@@ -55,4 +82,3 @@ function changeOptionalProductsOptions(sp) {
         console.log("appended child ops");
     }
 }
-

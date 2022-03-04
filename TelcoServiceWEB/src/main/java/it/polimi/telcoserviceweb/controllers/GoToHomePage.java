@@ -24,9 +24,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-//TODO per order inserire solo id_user , id_service_package, id_validity_period, star_date_subscription
 @WebServlet("/Home")
-
 public class GoToHomePage extends HttpServlet {
 
     private static final long serialVersionUID = 4305243484881868983L;

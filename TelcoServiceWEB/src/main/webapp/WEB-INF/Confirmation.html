@@ -2,8 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <meta charset="ISO-8859-1">
-<link rel="stylesheet" type="text/css" media="all"
-      href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}"/>
+<link
+        rel="stylesheet" type="text/css" media="all"
+        href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}"/>
 <link
         rel="stylesheet"
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
@@ -80,6 +81,7 @@
                     <input type="submit" value="Confirm">
                 </form>
             </td>
+            <td th:if="${order.getStatus().equals('approved')}">The order has been approved!</td>
         </tr>
         <tr th:unless="${session.user != null}">
             <td>You have to log in in order to pay for the order</td>

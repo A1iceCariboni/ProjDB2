@@ -32,7 +32,7 @@ CREATE TABLE `alert` (
   PRIMARY KEY (`id_alert`),
   KEY `fk_user_a_idx` (`id_user`),
   CONSTRAINT `fk_user_a` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `alert` (
 
 LOCK TABLES `alert` WRITE;
 /*!40000 ALTER TABLE `alert` DISABLE KEYS */;
-INSERT INTO `alert` VALUES (1,2,'emilio','emilio',540,'2022-03-04 02:18:23'),(2,3,'admin@admin.com','admin@admin.com',144,'2022-03-04 02:18:45');
+INSERT INTO `alert` VALUES (1,2,'emilio','emilio',540,'2022-03-04 02:18:23'),(2,3,'admin@admin.com','admin@admin.com',144,'2022-03-04 02:18:45'),(3,4,'emi','emi',144,'2022-03-04 02:21:21');
 /*!40000 ALTER TABLE `alert` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -136,7 +136,7 @@ CREATE TABLE `optional_product__order` (
 
 LOCK TABLES `optional_product__order` WRITE;
 /*!40000 ALTER TABLE `optional_product__order` DISABLE KEYS */;
-INSERT INTO `optional_product__order` VALUES (1,2),(3,2),(2,3),(12,4);
+INSERT INTO `optional_product__order` VALUES (1,2),(3,2),(41,2),(42,2),(43,2),(2,3),(35,3),(37,3),(38,3),(39,3),(40,3),(12,4);
 /*!40000 ALTER TABLE `optional_product__order` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -241,7 +241,7 @@ CREATE TABLE `optional_product__service_package` (
 
 LOCK TABLES `optional_product__service_package` WRITE;
 /*!40000 ALTER TABLE `optional_product__service_package` DISABLE KEYS */;
-INSERT INTO `optional_product__service_package` VALUES (3,1),(2,2),(4,2);
+INSERT INTO `optional_product__service_package` VALUES (3,1),(2,2),(4,2),(2,5),(3,5);
 /*!40000 ALTER TABLE `optional_product__service_package` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -266,7 +266,7 @@ CREATE TABLE `optional_products_report` (
 
 LOCK TABLES `optional_products_report` WRITE;
 /*!40000 ALTER TABLE `optional_products_report` DISABLE KEYS */;
-INSERT INTO `optional_products_report` VALUES (1,0),(2,881.28),(3,396),(4,536.16);
+INSERT INTO `optional_products_report` VALUES (1,0),(2,2643.84),(3,2772),(4,536.16);
 /*!40000 ALTER TABLE `optional_products_report` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -292,7 +292,7 @@ CREATE TABLE `order` (
   KEY `id_user_idx` (`id_user`),
   KEY `fk_service_package_idx` (`id_service_package`),
   KEY `fk_v_p_idx` (`id_validity_period`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -301,7 +301,7 @@ CREATE TABLE `order` (
 
 LOCK TABLES `order` WRITE;
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
-INSERT INTO `order` VALUES (1,857.28,NULL,'2022-03-02 01:18:23','approved',4,2,2,'2022-03-03 01:18:23',0),(2,540,NULL,'2022-03-02 01:39:17','approved',2,1,1,'2022-03-04 02:18:33',0),(3,437.76,NULL,'2022-03-02 01:49:42','waiting',4,2,1,'2022-03-04 02:18:33',0),(4,144,NULL,'2022-03-02 01:52:51','waiting',1,2,1,'2022-03-04 02:18:33',0),(5,144,NULL,'2022-03-02 01:55:05','approved',3,1,1,'2022-03-04 02:19:55',0),(6,269.76,NULL,'2022-03-02 13:17:05',NULL,2,2,2,NULL,NULL),(7,269.76,NULL,'2022-03-02 13:18:26','rejected',2,2,2,'2022-03-04 02:19:55',1),(8,144,NULL,'2022-03-03 01:31:10',NULL,4,1,1,NULL,NULL),(9,144,NULL,'2022-03-03 10:48:48','waiting',1,1,1,NULL,0),(10,144,NULL,'2022-03-03 10:51:06',NULL,4,1,1,NULL,NULL),(11,144,NULL,'2022-03-03 10:55:05','waiting',4,1,1,NULL,0),(12,805.92,NULL,'2022-03-03 10:59:30','waiting',4,2,2,NULL,0),(13,144,NULL,'2022-03-03 15:39:04','waiting',4,1,1,NULL,0),(14,144,NULL,'2022-03-03 15:42:54','rejected',4,1,1,NULL,NULL),(15,144,NULL,'2022-03-03 15:45:20','rejected',4,1,1,NULL,1),(16,144,NULL,'2022-03-03 15:45:36','waiting',4,1,1,NULL,0),(17,144,NULL,'2022-03-03 15:49:29','approved',4,1,1,NULL,0),(18,144,NULL,'2022-03-03 15:50:04','rejected',4,1,1,NULL,1),(19,144,NULL,'2022-03-03 15:57:19','rejected',4,1,1,NULL,1),(20,144,'2022-03-03 00:00:00','2022-03-03 16:10:51','rejected',4,1,1,NULL,1);
+INSERT INTO `order` VALUES (1,857.28,NULL,'2022-03-02 01:18:23','approved',4,2,2,'2022-03-03 01:18:23',0),(2,540,NULL,'2022-03-02 01:39:17','approved',2,1,1,'2022-03-04 02:18:33',0),(3,437.76,NULL,'2022-03-02 01:49:42','waiting',4,2,1,'2022-03-04 02:18:33',0),(4,144,NULL,'2022-03-02 01:52:51','waiting',1,2,1,'2022-03-04 02:18:33',0),(5,144,NULL,'2022-03-02 01:55:05','approved',3,1,1,'2022-03-04 02:19:55',0),(6,269.76,NULL,'2022-03-02 13:17:05',NULL,2,2,2,NULL,NULL),(7,269.76,NULL,'2022-03-02 13:18:26','rejected',2,2,2,'2022-03-04 02:19:55',1),(8,144,NULL,'2022-03-03 01:31:10',NULL,4,1,1,NULL,NULL),(9,144,NULL,'2022-03-03 10:48:48','waiting',1,1,1,NULL,0),(10,144,NULL,'2022-03-03 10:51:06',NULL,4,1,1,NULL,NULL),(11,144,NULL,'2022-03-03 10:55:05','waiting',4,1,1,NULL,0),(12,805.92,NULL,'2022-03-03 10:59:30','waiting',4,2,2,NULL,0),(13,144,NULL,'2022-03-03 15:39:04','waiting',4,1,1,NULL,0),(14,144,NULL,'2022-03-03 15:42:54','rejected',4,1,1,NULL,NULL),(15,144,NULL,'2022-03-03 15:45:20','rejected',4,1,1,NULL,1),(16,144,NULL,'2022-03-03 15:45:36','waiting',4,1,1,NULL,0),(17,144,NULL,'2022-03-03 15:49:29','approved',4,1,1,NULL,0),(18,144,NULL,'2022-03-03 15:50:04','rejected',4,1,1,NULL,1),(19,144,NULL,'2022-03-03 15:57:19','rejected',4,1,1,NULL,1),(20,144,'2022-03-03 00:00:00','2022-03-03 16:10:51','rejected',4,1,1,NULL,1),(21,144,'2022-03-04 00:00:00','2022-03-03 19:22:23','approved',4,1,1,NULL,0),(22,144,'2022-03-03 00:00:00','2022-03-03 19:28:19','approved',4,1,1,'2022-03-04 12:45:03',0),(24,144,'2022-03-04 00:00:00','2022-03-03 23:46:28','waiting',4,1,1,NULL,0),(25,144,'2022-03-04 00:00:00','2022-03-03 23:49:13','waiting',4,1,1,NULL,0),(26,144,'2022-03-04 00:00:00','2022-03-03 23:56:43','waiting',4,1,1,NULL,0),(27,144,'2022-03-05 00:00:00','2022-03-04 00:19:20','waiting',4,1,1,NULL,0),(28,144,'2022-03-05 00:00:00','2022-03-04 00:35:50','waiting',4,1,1,NULL,0),(29,144,'2022-03-05 00:00:00','2022-03-04 01:27:12','waiting',4,1,1,NULL,0),(30,144,'2022-03-05 00:00:00','2022-03-04 01:28:47','waiting',4,1,1,NULL,0),(31,144,'2022-03-05 00:00:00','2022-03-04 01:36:13','waiting',4,1,1,NULL,0),(32,144,'2022-03-05 00:00:00','2022-03-04 01:38:27','waiting',4,1,1,NULL,0),(33,144,'2022-03-05 00:00:00','2022-03-04 01:41:45','waiting',4,1,1,NULL,0),(34,144,'2022-03-05 00:00:00','2022-03-04 01:45:49','waiting',4,1,1,NULL,0),(35,540,'2022-03-04 00:00:00','2022-03-04 01:47:39','waiting',4,1,1,NULL,0),(36,144,'2022-03-05 00:00:00','2022-03-04 02:21:09','rejected',4,1,1,'2022-03-04 02:21:23',3),(37,1061.76,'2022-03-05 00:00:00','2022-03-04 02:28:24','waiting',4,5,2,NULL,0),(38,540,'2022-03-05 00:00:00','2022-03-04 12:19:35','waiting',4,1,1,NULL,0),(39,540,'2022-03-05 00:00:00','2022-03-04 12:31:30','waiting',4,1,1,NULL,0),(40,540,'2022-03-05 00:00:00','2022-03-04 12:35:30','approved',4,1,1,'2022-03-04 12:35:40',0),(41,857.28,'2022-03-05 00:00:00','2022-03-04 12:36:34','waiting',4,5,2,NULL,0),(42,857.28,'2022-03-25 00:00:00','2022-03-04 12:37:34','waiting',4,5,2,NULL,0),(43,857.28,'2022-03-12 00:00:00','2022-03-04 12:42:50','approved',4,5,2,NULL,0);
 /*!40000 ALTER TABLE `order` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -366,6 +366,11 @@ IF(new.id_validity_period IN (SELECT id_validity_period
         SET new.`number_of_failed_payments` = 1;
 	ELSE 
         SET new.`number_of_failed_payments` = 0;
+	END IF;
+    
+    IF new.`status` <> 'accepted' THEN
+		UPDATE user u SET insolvent = 1
+		WHERE u.id_user = new.id_user;
 	END IF;
 ELSE
 	SIGNAL SQLSTATE '45000' 
@@ -468,7 +473,7 @@ DELIMITER ;;
 -- if the order has been approved
 IF new.status = "approved" THEN
 	-- if there are no more rejected orders, reset user insolvent flag
-	IF (SELECT count(*) FROM `order` o WHERE o.status = "rejected") = 0 THEN
+	IF (SELECT count(*) FROM `order` o WHERE o.status <> "approved") = 0 THEN
         UPDATE `user` u SET insolvent = 0 
         WHERE u.id_user = new.id_user;
 	END IF;
@@ -540,7 +545,7 @@ CREATE TABLE `sales_report` (
 
 LOCK TABLES `sales_report` WRITE;
 /*!40000 ALTER TABLE `sales_report` DISABLE KEYS */;
-INSERT INTO `sales_report` VALUES (1,1,14,2016,1,396),(2,1,2,288,1,293.76),(2,2,4,1079.04,2,1123.68);
+INSERT INTO `sales_report` VALUES (1,1,32,4608,5,1980),(2,1,2,288,1,293.76),(2,2,4,1079.04,2,1123.68),(5,2,4,1079.04,4,2554.56);
 /*!40000 ALTER TABLE `sales_report` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -636,6 +641,7 @@ CREATE TABLE `service__service_package` (
 
 LOCK TABLES `service__service_package` WRITE;
 /*!40000 ALTER TABLE `service__service_package` DISABLE KEYS */;
+INSERT INTO `service__service_package` VALUES (4,5),(5,5);
 /*!40000 ALTER TABLE `service__service_package` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -654,7 +660,7 @@ CREATE TABLE `service_activation` (
   PRIMARY KEY (`id_service_activation`),
   KEY `fk_ser_idx` (`id_order`),
   CONSTRAINT `fk_order_sa` FOREIGN KEY (`id_order`) REFERENCES `order` (`id_order`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -663,7 +669,7 @@ CREATE TABLE `service_activation` (
 
 LOCK TABLES `service_activation` WRITE;
 /*!40000 ALTER TABLE `service_activation` DISABLE KEYS */;
-INSERT INTO `service_activation` VALUES (1,'2022-03-02 01:32:45','2024-03-02 01:32:45',1),(8,'2022-03-02 01:38:57','2024-03-02 01:38:57',1),(9,'2022-03-02 01:47:10','2023-03-02 01:47:10',2),(10,'2022-03-02 01:57:28','2023-03-02 01:57:28',5),(11,'2022-03-03 15:49:29','2023-03-03 15:49:29',17);
+INSERT INTO `service_activation` VALUES (1,'2022-03-02 01:32:45','2024-03-02 01:32:45',1),(8,'2022-03-02 01:38:57','2024-03-02 01:38:57',1),(9,'2022-03-02 01:47:10','2023-03-02 01:47:10',2),(10,'2022-03-02 01:57:28','2023-03-02 01:57:28',5),(11,'2022-03-03 15:49:29','2023-03-03 15:49:29',17),(12,'2022-03-03 19:22:23','2023-03-03 19:22:23',21),(13,'2022-03-04 12:35:41','2023-03-04 12:35:41',40),(14,'2022-03-04 12:42:54','2024-03-04 12:42:54',43),(15,'2022-03-04 12:45:10','2023-03-04 12:45:10',22);
 /*!40000 ALTER TABLE `service_activation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -678,7 +684,7 @@ CREATE TABLE `service_package` (
   `id_service_package` int NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id_service_package`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -687,7 +693,7 @@ CREATE TABLE `service_package` (
 
 LOCK TABLES `service_package` WRITE;
 /*!40000 ALTER TABLE `service_package` DISABLE KEYS */;
-INSERT INTO `service_package` VALUES (1,'prova1'),(2,'serv_pack2');
+INSERT INTO `service_package` VALUES (1,'prova1'),(2,'serv_pack2'),(5,'altroProdotto');
 /*!40000 ALTER TABLE `service_package` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -714,7 +720,7 @@ CREATE TABLE `service_package__validity_period` (
 
 LOCK TABLES `service_package__validity_period` WRITE;
 /*!40000 ALTER TABLE `service_package__validity_period` DISABLE KEYS */;
-INSERT INTO `service_package__validity_period` VALUES (1,1),(2,1),(2,2);
+INSERT INTO `service_package__validity_period` VALUES (1,1),(2,1),(5,1),(2,2),(5,2);
 /*!40000 ALTER TABLE `service_package__validity_period` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -741,7 +747,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'alice','alice','alice',0),(2,'emilio','emilio','emilio',1),(3,'admin@admin.com','admin@admin.com','admin',0),(4,'emi','emi','emi',0);
+INSERT INTO `user` VALUES (1,'alice','alice','alice',0),(2,'emilio','emilio','emilio',1),(3,'admin@admin.com','admin@admin.com','admin',0),(4,'emi','emi','emi',1);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -815,4 +821,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-03 16:14:51
+-- Dump completed on 2022-03-04 14:35:55

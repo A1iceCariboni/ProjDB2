@@ -24,11 +24,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.text.SimpleDateFormat;
 
-
-// TODO: create order in waiting state? cookie solo per non loggati.
-//  distingui casi in CONFIRMATION e fai fare solo pagamenti in confirmation oppure
-//  redirect alla pagina di login
-
 @WebServlet("/CreateOrder")
 public class CreateOrder extends HttpServlet {
     private static final long serialVersionUID = 2581016315576984824L;
