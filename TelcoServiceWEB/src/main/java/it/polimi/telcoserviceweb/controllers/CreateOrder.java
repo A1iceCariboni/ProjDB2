@@ -39,6 +39,8 @@ public class CreateOrder extends HttpServlet {
     @EJB(name = "it.polimi.telcoserviceejb.entities.OptionalProductService")
     private OptionalProductService opService;
 
+    private CookieManager cookieManager = new CookieManager();
+
     public CreateOrder() {
         super();
     }
@@ -70,10 +72,10 @@ public class CreateOrder extends HttpServlet {
             try {
                 if (submitted_form) {
                     // logged and submitted form: retrieve info from form
-                    cookies = generateCookieMap(id_service_package, id_validity_period, ids_optional_product, start_date_subscription);
+                    cookies = cookieManager.generateCookieMap(id_service_package, id_validity_period, ids_optional_product, start_date_subscription);
                 } else {
                     // logged and no submission: retrieve info from cookies
-                    cookies = getOrderInfoCookie(request);
+                    cookies = cookieManager.getOrderInfoCookie(request);
                 }
 
                 System.out.println(cookies);
@@ -94,7 +96,7 @@ public class CreateOrder extends HttpServlet {
                         (Date) cookies.get("start_date_subscription")
                 );
 
-                makeOrderCookieExpire(request, response);
+                cookieManager.makeOrderCookieExpire(request, response);
                 response.addCookie(new Cookie("order_to_see", id_order.toString()));
             } catch (ServiceException e) {
                 e.printStackTrace();
@@ -140,65 +142,6 @@ public class CreateOrder extends HttpServlet {
         doPost(request, response);
     }
 
-    /**
-     * makes the sp, vp, op, sd cookies expire (used after the creation of the order)
-     */
-    public void makeOrderCookieExpire(HttpServletRequest request, HttpServletResponse response) {
-        Arrays.stream(request.getCookies()).forEach(cookie -> {
-            switch (cookie.getName()) {
-                case "sp":
-                case "vp":
-                case "op":
-                case "sd":
-                    cookie.setMaxAge(0);
-                    response.addCookie(cookie);
-                    break;
-            }
-        });
-    }
-
-    /**
-     * returns the map of the order info from the cookies
-     */
-    public Map<String, Object> getOrderInfoCookie(HttpServletRequest request) throws ParseException {
-        String[] ids = new String[4];
-
-        // getting the order infos
-        Arrays.stream(request.getCookies()).forEach(cookie -> {
-            switch (cookie.getName()) {
-                case "sp":
-                    ids[0] = cookie.getValue();
-                    break;
-                case "vp":
-                    ids[1] = cookie.getValue();
-                    break;
-                case "op":
-                    ids[2] = cookie.getValue();
-                    break;
-                case "sd":
-                    ids[3] = cookie.getValue();
-                    break;
-            }
-        });
-        return generateCookieMap(ids[0], ids[1], ids[2], ids[3]);
-    }
-
-    /**
-     * generates the map of the order info from
-     */
-    public Map<String, Object> generateCookieMap(String sp, String vp, String op, String sd) throws ParseException, NumberFormatException {
-        final Map<String, Object> cookies = new HashMap<>();
-
-        cookies.put("service_package", Integer.parseInt(sp));
-        cookies.put("validity_period", Integer.parseInt(vp));
-        if (op != null && !op.isEmpty()) {
-            cookies.put("optional_products", Arrays.stream(op.replaceAll("\\[", "").replaceAll("]", "")
-                    .split("-")).filter(x -> !x.equals("")).map(Integer::parseInt).collect(Collectors.toList()));
-        }
-        cookies.put("start_date_subscription", (new SimpleDateFormat("yyyy-MM-dd")).parse(StringEscapeUtils.escapeJava(sd)));
-
-        return cookies;
-    }
 
     public void destroy() {
     }

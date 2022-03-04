@@ -7,7 +7,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "`order`")
-@NamedQueries({@NamedQuery(name = "Order.getSuspended", query = "SELECT o FROM Order o WHERE o.status = 'rejected'"),
+@NamedQueries({@NamedQuery(name = "Order.getSuspended", query = "SELECT o FROM Order o WHERE o.status = 'rejected' OR o.status = 'waiting'"),
+        @NamedQuery(name = "Order.getSuspendedByUser", query = "SELECT o FROM Order o WHERE o.status = 'rejected' OR o.status = 'waiting' AND o.user.id_user = ?1 "),
         @NamedQuery(name = "Order.getOrderById", query = "SELECT o FROM Order o WHERE o.id = ?1")})
 public class Order {
     @Id

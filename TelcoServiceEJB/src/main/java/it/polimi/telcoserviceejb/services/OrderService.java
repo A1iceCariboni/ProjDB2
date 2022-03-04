@@ -93,6 +93,16 @@ public class OrderService {
         return orders;
     }
 
+    public List<Order> getSuspendedByUser(Integer id) throws Exception {
+        List<Order> orders = null;
+        try {
+            orders = em.createNamedQuery("Order.getSuspendedByUser", Order.class).setParameter(1, id).getResultList();
+        } catch (PersistenceException e) {
+            throw new Exception("Couldn't load data");
+        }
+        return orders;
+    }
+
     public Order getOrderById(int id_order) throws PersistenceException, IndexOutOfBoundsException {
         try {
             Order order = em.createNamedQuery("Order.getOrderById", Order.class).setParameter(1, id_order)

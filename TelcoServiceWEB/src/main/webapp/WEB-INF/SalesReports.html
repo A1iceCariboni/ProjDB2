@@ -105,6 +105,7 @@
         <tr>
             <th>Id</th>
             <th>Creation date</th>
+            <th>Status</th>
 
         </tr>
         </thead>
@@ -112,7 +113,7 @@
         <tr th:each="o:${rejected}">
             <td th:text="${o.getId()}"></td>
             <td th:text="${o.getCreationDate()}"></td>
-
+            <td th:text="${o.getStatus()}"></td>
         </tr>
         </tbody>
     </table>

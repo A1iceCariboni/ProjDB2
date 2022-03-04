@@ -23,12 +23,33 @@
 <body onload="initHome()" >
 <div align="right" th:if="${session.user != null}">
     <p th:text="${'Hello, ' + session.user.username }"></p>
-    <a th:href="@{/Logout}">Logout</a>
+    <a th:href="@{/Logout}">Logout</a><br>
+    <h5>Suspended orders:</h5>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="s : ${suspended}">
+            <td th:text="${s.getId()}"></td>
+            <td th:text="${s.getStatus()}"></td>
+            <td>
+                <form action="RetryPayment" method="POST">
+                    <input th:value="${s.getId()}" name="idorder" hidden>
+                    <button type = "submit">Pay</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 <div align="right" th:if="${session.user == null}">
     <a th:href="@{/CheckLogin}">Login or Register</a>
 </div>
-
 <h4>Make order form:</h4>
 <div>
     <form action="CreateOrder" method="POST">

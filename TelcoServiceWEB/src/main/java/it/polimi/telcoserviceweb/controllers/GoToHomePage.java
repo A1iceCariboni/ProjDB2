@@ -1,13 +1,7 @@
 package it.polimi.telcoserviceweb.controllers;
 
-import it.polimi.telcoserviceejb.entities.OptionalProduct;
-import it.polimi.telcoserviceejb.entities.Service;
-import it.polimi.telcoserviceejb.entities.ServicePackage;
-import it.polimi.telcoserviceejb.entities.ValidityPeriod;
-import it.polimi.telcoserviceejb.services.OptionalProductService;
-import it.polimi.telcoserviceejb.services.ServicePackageService;
-import it.polimi.telcoserviceejb.services.ServiceService;
-import it.polimi.telcoserviceejb.services.ValidityPeriodService;
+import it.polimi.telcoserviceejb.entities.*;
+import it.polimi.telcoserviceejb.services.*;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -40,6 +34,9 @@ public class GoToHomePage extends HttpServlet {
     @EJB(name = "it.polimi.telcoserviceejb.entities.ServicePackageService")
     private ServicePackageService servicePackageService;
 
+    @EJB(name = "it.polimi.telcoserviceejb.entities.OrderService")
+    private OrderService orderService;
+
     public GoToHomePage() {
         super();
     }
@@ -55,6 +52,17 @@ public class GoToHomePage extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User user = (User) request.getSession().getAttribute("user");
+        List<Order> suspendedOrders = null;
+
+        if(user != null){
+            try {
+                suspendedOrders = orderService.getSuspendedByUser(user.getId());
+            } catch (Exception e) {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to get data");
+            }
+
+        }
         List<OptionalProduct> ops = null;
         List<ValidityPeriod> validityPeriods = null;
         List<Service> services = null;
@@ -76,6 +84,7 @@ public class GoToHomePage extends HttpServlet {
         ctx.setVariable("val_pers", validityPeriods);
         ctx.setVariable("services", services);
         ctx.setVariable("service_packages", servicePackages);
+        ctx.setVariable("suspended", suspendedOrders);
         templateEngine.process(path, ctx, response.getWriter());
     }
 
