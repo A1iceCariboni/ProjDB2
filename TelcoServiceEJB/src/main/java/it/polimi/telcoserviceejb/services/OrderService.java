@@ -93,7 +93,7 @@ public class OrderService {
         return orders;
     }
 
-    public Order getOrderById(int id_order) throws PersistenceException {
+    public Order getOrderById(int id_order) throws PersistenceException, IndexOutOfBoundsException {
         try {
             Order order = em.createNamedQuery("Order.getOrderById", Order.class).setParameter(1, id_order)
                     .getResultList().get(0);
@@ -105,4 +105,18 @@ public class OrderService {
         }
     }
 
+    public void changeStatus(int id_order, String status_payment) throws PersistenceException {
+        Order order = getOrderById(id_order);
+        if(order.getStatus().equals("approved")){
+            throw new PersistenceException("Incoherent data to be sent");
+        } else {
+            if(status_payment.equals("approved")){
+                order.setStatus(status_payment);
+            } else if(status_payment.equals("rejected")) {
+                order.setTimeLastRejection(new Date(System.currentTimeMillis()));
+            } else {
+                throw new PersistenceException("Wrong status update");
+            }
+        }
+    }
 }

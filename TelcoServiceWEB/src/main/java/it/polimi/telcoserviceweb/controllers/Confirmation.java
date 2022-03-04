@@ -56,24 +56,19 @@ public class Confirmation extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // used in order to change status of the order
+        // TODO: check for the owning of the order by the user issuing the payment
         final Map<String, Object> cookies = getOrderInfo(request);
         User user = (User) request.getSession().getAttribute("user");
 
         if (user == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "You have to be logged to make an order!");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "You have to be logged to change an order!");
             return;
         }
 
         try {
-            orderService.createOrder(
-                    request.getParameter("status_payment"),
-                    user.getId(),
-                    (Integer) cookies.get("service_package"),
-                    (Integer) cookies.get("validity_period"),
-                    (List<Integer>) cookies.get("optional_products"),
-                    (Date) cookies.get("start_date_subscription")
-            );
-        } catch (ServiceException e) {
+            orderService.changeStatus(getIdFromCookie(request), request.getParameter("status_payment"));
+        } catch (PersistenceException e) {
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Can't create order");
             return;
         }
@@ -100,11 +95,13 @@ public class Confirmation extends HttpServlet {
             } else {
                 // if logged
                 try {
-                    order = getOrderFromIdCookie(request);
-                    System.out.println("CONFIRMATION: logged and ID");
-                } catch (PersistenceException e) {
+                    // when user did an order but wasn't logged
                     order = generateOrderFromCookies(request);
                     System.out.println("CONFIRMATION: logged and COOKIE");
+                } catch (PersistenceException | IndexOutOfBoundsException e) {
+                    // TODO: check for the owning of the order by the user issuing the payment
+                    order = getOrderFromIdCookie(request);
+                    System.out.println("CONFIRMATION: logged and ID");
                 }
             }
 
@@ -129,15 +126,19 @@ public class Confirmation extends HttpServlet {
         templateEngine.process(path, ctx, response.getWriter());
     }
 
-    public Order getOrderFromIdCookie(HttpServletRequest request) throws PersistenceException {
+    public int getIdFromCookie(HttpServletRequest request){
         final int[] id_order = {0};
         Arrays.stream(request.getCookies()).forEach(cookie -> {
             if ("order_to_see".equals(cookie.getName())) {
                 id_order[0] = Integer.parseInt(cookie.getValue());
             }
         });
+        return id_order[0];
+    }
+
+    public Order getOrderFromIdCookie(HttpServletRequest request) throws PersistenceException, IndexOutOfBoundsException {
         System.out.println("getOrderFromIdCookie");
-        return orderService.getOrderById(id_order[0]);
+        return orderService.getOrderById(getIdFromCookie(request));
     }
 
     public Order generateOrderFromCookies(HttpServletRequest request) throws ServiceException {
@@ -166,6 +167,7 @@ public class Confirmation extends HttpServlet {
         return new Order(
                 total_amount,
                 "not_created",
+                null,
                 0,
                 (Date) cookies.get("start_date_subscription"),
                 null,

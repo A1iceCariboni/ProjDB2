@@ -121,11 +121,14 @@ public class CreateOrder extends HttpServlet {
                 Cookie c_vp = new Cookie("vp", id_validity_period);
                 Cookie c_op = new Cookie("op", ids_optional_product);
                 Cookie c_sd = new Cookie("sd", start_date_subscription);
+                Cookie c_id_to_see = new Cookie("order_to_see", "");
+                c_id_to_see.setMaxAge(0);
 
                 response.addCookie(c_sp);
                 response.addCookie(c_vp);
                 response.addCookie(c_op);
                 response.addCookie(c_sd);
+                response.addCookie(c_id_to_see);
             } else {
                 // not logged and no submission: error
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Creating order with no cookies and no submission");

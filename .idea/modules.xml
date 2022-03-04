@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/ProjDB2.iml" filepath="$PROJECT_DIR$/.idea/ProjDB2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TelcoServiceEJB/TelcoServiceEJB.iml" filepath="$PROJECT_DIR$/TelcoServiceEJB/TelcoServiceEJB.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TelcoServiceWEB/TelcoServiceWEB.iml" filepath="$PROJECT_DIR$/TelcoServiceWEB/TelcoServiceWEB.iml" />
+    </modules>
+  </component>
+</project>

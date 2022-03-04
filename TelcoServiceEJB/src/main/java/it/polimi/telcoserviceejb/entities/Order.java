@@ -21,6 +21,9 @@ public class Order {
     @Column(name = "status", length = 45)
     private String status;
 
+    @Column(name = "time_last_rejection")
+    private Date timeLastRejection;
+
     @Column(name = "number_of_failed_payments")
     private Integer numberOfFailedPayment;
 
@@ -48,9 +51,10 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "id_optional_product"))
     private List<OptionalProduct> optionalProducts;
 
-    public Order(Float totalValue, String status, Integer numberOfFailedPayment, Date startDateSub, Timestamp creationDate, User user, ServicePackage servicePackage, ValidityPeriod validityPeriod, List<OptionalProduct> optionalProducts) {
+    public Order(Float totalValue, String status,Date timeLastRejection, Integer numberOfFailedPayment, Date startDateSub, Timestamp creationDate, User user, ServicePackage servicePackage, ValidityPeriod validityPeriod, List<OptionalProduct> optionalProducts) {
         this.totalValue = totalValue;
         this.status = status;
+        this.timeLastRejection = timeLastRejection;
         this.numberOfFailedPayment = numberOfFailedPayment;
         this.startDateSub = startDateSub;
         this.creationDate = creationDate;
@@ -158,5 +162,13 @@ public class Order {
                 ", validityPeriod=" + validityPeriod +
                 ", optionalProducts=" + optionalProducts +
                 '}';
+    }
+
+    public Date getTimeLastRejection() {
+        return timeLastRejection;
+    }
+
+    public void setTimeLastRejection(Date timeLastRejection) {
+        this.timeLastRejection = timeLastRejection;
     }
 }
