@@ -56,24 +56,22 @@ public class ServicePackageService {
         em.persist(sp);
     }
 
-    public List<ServicePackage> getAllServicePackage() throws ServiceException {
+    public List<ServicePackage> getAllServicePackage()  {
         List<ServicePackage> sp = null;
         try {
             sp = em.createNamedQuery("ServicePackage.findAll", ServicePackage.class).getResultList();
         } catch (PersistenceException e) {
-            throw new ServiceException("Cannot load service packages");
         }
 
         return sp;
     }
 
-    public ServicePackage getServicePackageById(Integer id_service_package) throws ServiceException {
+    public ServicePackage getServicePackageById(Integer id_service_package) {
         ServicePackage sp = null;
         try {
             sp = em.createNamedQuery("ServicePackage.findById", ServicePackage.class).setParameter(1, id_service_package)
                     .getResultList().get(0);
         } catch (PersistenceException | IndexOutOfBoundsException e) {
-            throw new ServiceException("Cannot load service packages");
         }
 
         return sp;

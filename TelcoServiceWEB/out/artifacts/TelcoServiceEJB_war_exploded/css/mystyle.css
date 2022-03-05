@@ -1,3 +1,62 @@
-table, th, tr {
-  border: 1px solid black;
+/* general css */
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.w100 {
+  width: 100%;
+}
+.w50 {
+  width: 50%;
+}
+
+/* bootstrap override */
+
+.dropdown.bootstrap-select {
+  width: 100% !important;
+}
+
+/* nav */
+
+nav .content {
+  width: 100%;
+}
+
+nav .navbar-content {
+  display: flex;
+
+  align-items: center;
+
+  width: 100%;
+  justify-content: space-between;
+}
+
+nav .dx {
+  display: flex;
+  align-items: center;
+}
+
+form {
+  background-color: rgb(244, 244, 244);
+  padding: 20px;
+  margin-top: 10px;
+}
+
+/* login page */
+
+#auth-toggle:checked ~ #login {
+  display: none;
+}
+
+#register {
+  display: none;
+}
+
+#auth-toggle:checked ~ #register {
+  display: block;
 }

@@ -39,13 +39,10 @@ public class GetServicePackages extends HttpServlet {
         ServicePackage servicePackage = null;
         String id_sp = request.getParameter("id_service_package");
 
-        try {
             if (id_sp != null && !id_sp.isEmpty()) {
                 servicePackage = servicePackageService.getServicePackageById(Integer.parseInt(id_sp));
             }
-        } catch (ServiceException e) {
-            e.printStackTrace();
-        }
+
         System.out.println(servicePackage);
 
         try {
