@@ -12,13 +12,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CookieManager {
-
-
-
     /**
      * makes the sp, vp, op, sd cookies expire (used after the creation of the order)
      */
-    public void makeOrderCookieExpire(HttpServletRequest request, HttpServletResponse response) {
+    public static void makeOrderCookieExpire(HttpServletRequest request, HttpServletResponse response) {
         Arrays.stream(request.getCookies()).forEach(cookie -> {
             switch (cookie.getName()) {
                 case "sp":
@@ -33,9 +30,21 @@ public class CookieManager {
     }
 
     /**
+     * makes the sp, vp, op, sd cookies expire (used after the creation of the order)
+     */
+    public static void makeOrderToSeeCookieExpire(HttpServletRequest request, HttpServletResponse response) {
+        Arrays.stream(request.getCookies()).forEach(cookie -> {
+            if ("order_to_see".equals(cookie.getName())) {
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+            }
+        });
+    }
+
+    /**
      * returns the map of the order info from the cookies
      */
-    public Map<String, Object> getOrderInfoCookie(HttpServletRequest request) throws ParseException {
+    public static Map<String, Object> getOrderInfoCookie(HttpServletRequest request) throws ParseException {
         String[] ids = new String[4];
 
         // getting the order infos
@@ -61,12 +70,12 @@ public class CookieManager {
     /**
      * generates the map of the order info from
      */
-    public Map<String, Object> generateCookieMap(String sp, String vp, String op, String sd) throws ParseException, NumberFormatException {
+    public static Map<String, Object> generateCookieMap(String sp, String vp, String op, String sd) throws ParseException, NumberFormatException {
         final Map<String, Object> cookies = new HashMap<>();
 
         cookies.put("service_package", Integer.parseInt(sp));
         cookies.put("validity_period", Integer.parseInt(vp));
-        if (op != null && !op.isEmpty()) {
+        if (op != null && !op.isEmpty() && !op.equals("null")) {
             cookies.put("optional_products", Arrays.stream(op.replaceAll("\\[", "").replaceAll("]", "")
                     .split("-")).filter(x -> !x.equals("")).map(Integer::parseInt).collect(Collectors.toList()));
         }

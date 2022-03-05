@@ -25,8 +25,10 @@
     <p th:text="${'Hello, ' + session.user.username }"></p>
     <a th:href="@{/Logout}">Logout</a><br>
     <a th:href="@{/GetOrders}">Click here to see your orders</a>
-    <h5>Suspended orders:</h5>
-    <table>
+    <div class="ui-state-error-text" th:if="${error_message!=null}" th:text="${error_message}">messaggio da scrivere</div>
+    <h5 th:unless="${session.user.insolvent}">You paid for all of your orders</h5>
+    <h5 th:if="${session.user.insolvent}">Suspended orders:</h5>
+    <table th:if="${session.user.insolvent}">
         <thead>
         <tr>
             <th>Id</th>

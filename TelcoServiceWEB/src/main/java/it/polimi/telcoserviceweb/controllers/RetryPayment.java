@@ -17,34 +17,28 @@ import java.io.IOException;
 @WebServlet("/RetryPayment")
 public class RetryPayment extends HttpServlet {
     private static final long serialVersionUID = 3959138934394928201L;
-    private TemplateEngine templateEngine;
 
-    private CookieManager cookieManager = new CookieManager();
-    public RetryPayment(){super();}
-
+    public RetryPayment() {
+        super();
+    }
 
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
         ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
         templateResolver.setTemplateMode(TemplateMode.HTML);
-        this.templateEngine = new TemplateEngine();
-        this.templateEngine.setTemplateResolver(templateResolver);
+        TemplateEngine templateEngine = new TemplateEngine();
+        templateEngine.setTemplateResolver(templateResolver);
         templateResolver.setSuffix(".html");
     }
 
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        Integer id = Integer.parseInt(request.getParameter("idorder"));
-
-        cookieManager.makeOrderCookieExpire(request, response);
-        response.addCookie(new Cookie("order_to_see", id.toString()));
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.addCookie(new Cookie("order_to_see", request.getParameter("idorder")));
+        CookieManager.makeOrderCookieExpire(request, response);
 
         String path;
         path = getServletContext().getContextPath() + "/Confirmation";
         response.sendRedirect(path);
     }
-
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request, response);

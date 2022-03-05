@@ -15,6 +15,7 @@ import javax.persistence.PersistenceException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,7 +58,6 @@ public class Confirmation extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // used in order to change status of the order
-        // TODO: check for the owning of the order by the user issuing the payment
         final Map<String, Object> cookies = getOrderInfo(request);
         User user = (User) request.getSession().getAttribute("user");
 
@@ -67,9 +67,9 @@ public class Confirmation extends HttpServlet {
         }
 
         try {
-            orderService.changeStatus(getIdFromCookie(request), request.getParameter("status_payment"));
-        } catch (PersistenceException e) {
-            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Can't create order");
+            orderService.changeStatus(getIdFromCookie(request), request.getParameter("status_payment"), user.getId());
+        } catch (PersistenceException | ServiceException | NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
             return;
         }
 
@@ -87,30 +87,37 @@ public class Confirmation extends HttpServlet {
         User user = (User) request.getSession().getAttribute("user");
         Order order;
 
-        try {
-            if (user == null) {
+        if (user == null) {
+            try {
                 System.out.println("CONFIRMATION: not logged COOKIE");
                 // if not logged
                 order = generateOrderFromCookies(request);
-            } else {
-                // if logged
-                try {
-                    // when user did an order but wasn't logged
-                    order = generateOrderFromCookies(request);
-                    System.out.println("CONFIRMATION: logged and COOKIE");
-                } catch (PersistenceException | IndexOutOfBoundsException | ServiceException e) {
-                    // TODO: check for the owning of the order by the user issuing the payment
-                    order = getOrderFromIdCookie(request);
-                    System.out.println("CONFIRMATION: logged and ID");
-                }
+            } catch (ServiceException | PersistenceException e) {
+                e.printStackTrace();
+                order = null;
             }
-
-            System.out.println(order);
-        } catch (ServiceException | PersistenceException e) {
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No orders to show");
-            return;
+        } else {
+            // if logged
+            try {
+                // when user did an order but wasn't logged
+                order = generateOrderFromCookies(request);
+                System.out.println("CONFIRMATION: logged and COOKIE");
+            } catch (PersistenceException | IndexOutOfBoundsException | ServiceException e) {
+                try {
+                    order = getOrderFromIdCookie(request);
+                    if (order.getUser().getId() != user.getId()) {
+                        throw new ServletException("you can't see an order of another user!");
+                    }
+                } catch (Exception e1) {
+                    CookieManager.makeOrderToSeeCookieExpire(request, response);
+                    order = null;
+                    System.out.println(e1.getMessage());
+                }
+                System.out.println("CONFIRMATION: logged and ID");
+            }
         }
+
+        System.out.println(order);
 
         String path = "/WEB-INF/Confirmation.html";
         ServletContext servletContext = getServletContext();
@@ -118,19 +125,17 @@ public class Confirmation extends HttpServlet {
 
         ctx.setVariable("order", order);
 
-        /*ctx.setVariable("service_package", servicePackage);
-        ctx.setVariable("validity_period", validityPeriod);
-        ctx.setVariable("optional_products", optionalProducts);
-        ctx.setVariable("start_date_subscription", cookies.get("start_date_subscription"));
-        ctx.setVariable("total_amount", total_amount);*/
         templateEngine.process(path, ctx, response.getWriter());
     }
 
-    public int getIdFromCookie(HttpServletRequest request){
+    public int getIdFromCookie(HttpServletRequest request) {
         final int[] id_order = {0};
         Arrays.stream(request.getCookies()).forEach(cookie -> {
             if ("order_to_see".equals(cookie.getName())) {
-                id_order[0] = Integer.parseInt(cookie.getValue());
+                try {
+                    id_order[0] = Integer.parseInt(cookie.getValue());
+                } catch (NumberFormatException ignored) {
+                }
             }
         });
         return id_order[0];
@@ -193,7 +198,7 @@ public class Confirmation extends HttpServlet {
                         break;
                     case "op":
                         cookies.put("optional_products", Arrays.stream(cookie.getValue().replaceAll("\\[", "").replaceAll("]", "")
-                                .split("-")).filter(x -> !x.equals("")).map(Integer::parseInt).collect(Collectors.toList()));
+                                .split("-")).filter(x -> !x.equals("") && !x.equals("null")).map(Integer::parseInt).collect(Collectors.toList()));
                         break;
                     case "sd":
                         DateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd");

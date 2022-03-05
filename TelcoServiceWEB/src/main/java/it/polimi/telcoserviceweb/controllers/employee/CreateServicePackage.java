@@ -52,22 +52,22 @@ public class CreateServicePackage extends HttpServlet {
 
         try {
             name = StringEscapeUtils.escapeJava(request.getParameter("name"));
-            validity_periods_ids = Arrays.asList(request.getParameterValues("vp")).stream().map(Integer::parseInt).collect(Collectors.toList());
-            optional_products_ids = Arrays.asList(request.getParameterValues("ops")).stream().map(Integer::parseInt).collect(Collectors.toList());
-            services_ids = Arrays.asList(request.getParameterValues("servs")).stream().map(Integer::parseInt).collect(Collectors.toList());
+            validity_periods_ids = Arrays.stream(request.getParameterValues("vp")).map(Integer::parseInt).collect(Collectors.toList());
+            optional_products_ids = Arrays.stream(request.getParameterValues("ops")).map(Integer::parseInt).collect(Collectors.toList());
+            services_ids = Arrays.stream(request.getParameterValues("servs")).map(Integer::parseInt).collect(Collectors.toList());
 
             if (name == null || name.isEmpty() || validity_periods_ids.isEmpty() || services_ids.isEmpty()) {
                 throw new Exception("Missing or empty fields");
             }
-
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty fields");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
             return;
         }
+
         try {
             servicePackageService.createServicePackage(name, validity_periods_ids, optional_products_ids, services_ids);
         } catch (ServiceException e) {
-            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Not existent services");
+            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
             return;
         }
         String path;

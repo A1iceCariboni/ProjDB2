@@ -23,16 +23,15 @@ import java.util.Arrays;
 
 
 @WebServlet("/CheckLogin")
-
-public class CheckLogin extends HttpServlet{
+public class CheckLogin extends HttpServlet {
     private static final long serialVersionUID = 7618698437761728371L;
     private TemplateEngine templateEngine;
     @EJB(name = "it.polimi.expensemanagmentejb.services/UserService")
     private UserService usrService;
 
     public CheckLogin() {
-            super();
-        }
+        super();
+    }
 
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
@@ -43,11 +42,9 @@ public class CheckLogin extends HttpServlet{
         templateResolver.setSuffix(".html");
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // obtain and escape params
         String usrn = null;
-        String email = null;
         String pwd = null;
         try {
             usrn = StringEscapeUtils.escapeJava(request.getParameter("username"));
@@ -55,7 +52,6 @@ public class CheckLogin extends HttpServlet{
             if (usrn == null || pwd == null || usrn.isEmpty() || pwd.isEmpty()) {
                 throw new Exception("Missing or empty credential value");
             }
-
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing credential value");
             return;
@@ -77,11 +73,10 @@ public class CheckLogin extends HttpServlet{
             path = "/index.html";
             templateEngine.process(path, ctx, response.getWriter());
         } else {
-            if(Arrays.stream(request.getCookies()).map(Cookie::getName).filter(s -> s.equals("op") || s.equals("sd") || s.equals("sp") || s.equals("vp")).count() == 4){
+            if (Arrays.stream(request.getCookies()).map(Cookie::getName).filter(s -> s.equals("op") || s.equals("sd") || s.equals("sp") || s.equals("vp")).count() == 4) {
                 // if there are all the cookies to do the order, redirect to the Confirmation page
                 path = getServletContext().getContextPath() + "/CreateOrder";
-            } else
-            {
+            } else {
                 path = getServletContext().getContextPath() + "/Home";
             }
             request.getSession().setAttribute("user", user);
@@ -90,15 +85,14 @@ public class CheckLogin extends HttpServlet{
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = "/index.html";
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 
         templateEngine.process(path, ctx, response.getWriter());
     }
+
     public void destroy() {
     }
 

@@ -14,7 +14,6 @@ import java.util.List;
 public class User implements Serializable{
     private static final long serialVersionUID = 4688314470343184384L;
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id_user;
@@ -77,4 +76,14 @@ public class User implements Serializable{
         this.id_user = id;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id_user=" + id_user +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", insolvent=" + insolvent +
+                '}';
+    }
 }

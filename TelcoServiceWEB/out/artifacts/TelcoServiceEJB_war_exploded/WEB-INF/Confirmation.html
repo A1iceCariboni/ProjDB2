@@ -23,12 +23,13 @@
     <a th:href="@{/Logout}">Logout</a> or <a th:href="@{/Home}">Return To Home</a>
 </div>
 <div align="right" th:if="${session.user == null}">
-    <a th:href="@{/CheckLogin}">Login or Register</a>
+    <a th:href="@{/CheckLogin}">Login or Register</a> or <a th:href="@{/Home}">Return To Home</a>
 </div>
 
 <h4>Order Summary:</h4>
 <div>
-    <table>
+    <div th:if="${order == null}">Impossible to see order</div>
+    <table th:unless="${order == null}">
         <thead>
         <tr>
             <th>Service package</th>

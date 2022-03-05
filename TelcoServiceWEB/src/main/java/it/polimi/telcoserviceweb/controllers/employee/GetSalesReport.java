@@ -26,28 +26,21 @@ public class GetSalesReport extends HttpServlet {
     private TemplateEngine templateEngine;
     @EJB(name = "it.polimi.expensemanagmentejb.services/ServicePackageService")
     private ServicePackageService servicePackageService;
-
     @EJB(name = "it.polimi.expensemanagmentejb.services/SalesReportService")
     private SalesReportService salesReportService;
-
     @EJB(name = "it.polimi.expensemanagmentejb.services/UserService")
     private UserService userService;
-
-
     @EJB(name = "it.polimi.expensemanagmentejb.services/OrderService")
     private OrderService orderService;
-
-
     @EJB(name = "it.polimi.expensemanagmentejb.services/AlertService")
     private AlertService alertService;
-
-
-    @EJB(name = "it.polimi.expensemanagmentejb.services/OptionalProductService>")
+    @EJB(name = "it.polimi.expensemanagmentejb.services/OptionalProductService")
     private OptionalProductService optionalProductService;
 
 
-
-    public GetSalesReport(){super();}
+    public GetSalesReport() {
+        super();
+    }
 
     public void init() throws ServletException {
         ServletContext servletContext = getServletContext();
@@ -63,8 +56,8 @@ public class GetSalesReport extends HttpServlet {
         List<ServicePackage> servicePackages = null;
         try {
             servicePackages = servicePackageService.getAllServicePackage();
-        }catch(Exception e){
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to get data");
+        } catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             return;
         }
 
@@ -90,7 +83,7 @@ public class GetSalesReport extends HttpServlet {
 
         try {
             servicePackages = servicePackageService.getAllServicePackage();
-        }catch(Exception e){
+        } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to get data");
             return;
         }
@@ -99,14 +92,11 @@ public class GetSalesReport extends HttpServlet {
         Integer idPurch = null;
         try {
             idPurch = Integer.parseInt(request.getParameter("sp"));
-            if (idPurch == null) {
-                throw new Exception("Missing or empty fields");
-            }
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty fields");
             return;
         }
-        switch(reportType) {
+        switch (reportType) {
             case "NumberPurchForPack":
                 try {
                     rep_1 = salesReportService.getTotalPurchasePerPackage(idPurch);
@@ -119,9 +109,6 @@ public class GetSalesReport extends HttpServlet {
                 Integer idVP = null;
                 try {
                     idVP = Integer.parseInt(request.getParameter("vp"));
-                    if (idVP == null) {
-                        throw new Exception("Missing or empty fields");
-                    }
                 } catch (Exception e) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty fields");
                     return;
@@ -129,7 +116,7 @@ public class GetSalesReport extends HttpServlet {
                 try {
                     rep_2 = salesReportService.getTotalPurchasePerPackageAndVP(idPurch, idVP);
                 } catch (ReportException e) {
-                    response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Not existent service package");
+                    response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
                     return;
                 }
                 break;
@@ -138,7 +125,7 @@ public class GetSalesReport extends HttpServlet {
                     rep_3 = salesReportService.getValueNoOptionalProducts(idPurch);
                     rep_4 = salesReportService.getValueWithOptionalProducts(idPurch);
                 } catch (ReportException e) {
-                    response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Not existent service package");
+                    response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
                     return;
                 }
                 break;
@@ -147,11 +134,10 @@ public class GetSalesReport extends HttpServlet {
                 try {
                     rep_5 = salesReportService.getAvgOptProduct(idPurch);
                 } catch (ReportException e) {
-                    response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Not existent service package");
+                    response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
                     return;
                 }
                 break;
-
         }
 
         String path = "/WEB-INF/SalesReports.html";
@@ -175,11 +161,8 @@ public class GetSalesReport extends HttpServlet {
             ctx.setVariable("rejected", orderService.getSuspended());
             ctx.setVariable("alerts", alertService.getAllAlerts());
             ctx.setVariable("bestseller", optionalProductService.getBestSellers());
-        }catch(Exception e){
+        } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to get data");
         }
     }
-
-
-    public void destory(){}
 }

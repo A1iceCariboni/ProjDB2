@@ -104,6 +104,7 @@
         <thead>
         <tr>
             <th>Id</th>
+            <th>User</th>
             <th>Creation date</th>
             <th>Status</th>
 
@@ -112,6 +113,7 @@
         <tbody>
         <tr th:each="o:${rejected}">
             <td th:text="${o.getId()}"></td>
+            <td th:text="${o.getUser().getUsername()}"></td>
             <td th:text="${o.getCreationDate()}"></td>
             <td th:text="${o.getStatus()}"></td>
         </tr>

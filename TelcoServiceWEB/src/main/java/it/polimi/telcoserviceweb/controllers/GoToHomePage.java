@@ -20,7 +20,6 @@ import java.util.List;
 
 @WebServlet("/Home")
 public class GoToHomePage extends HttpServlet {
-
     private static final long serialVersionUID = 4305243484881868983L;
     private TemplateEngine templateEngine;
 
@@ -36,6 +35,8 @@ public class GoToHomePage extends HttpServlet {
 
     @EJB(name = "it.polimi.telcoserviceejb.entities.OrderService")
     private OrderService orderService;
+    @EJB(name = "it.polimi.telcoserviceejb.entities.UserService")
+    private UserService userService;
 
     public GoToHomePage() {
         super();
@@ -55,7 +56,7 @@ public class GoToHomePage extends HttpServlet {
         User user = (User) request.getSession().getAttribute("user");
         List<Order> suspendedOrders = null;
 
-        if(user != null){
+        if (user != null) {
             try {
                 suspendedOrders = orderService.getSuspendedByUser(user.getId());
             } catch (Exception e) {
@@ -67,14 +68,20 @@ public class GoToHomePage extends HttpServlet {
         List<ValidityPeriod> validityPeriods = null;
         List<Service> services = null;
         List<ServicePackage> servicePackages = null;
-        try{
+        try {
             ops = opService.getAllOptionalProduct();
             validityPeriods = validityPeriodService.getAllValidityPeriod();
             services = serviceService.getAllServices();
             servicePackages = servicePackageService.getAllServicePackage();
-        }catch(Exception e){
+        } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to get data");
             return;
+        }
+
+        // update of the user session attribute
+        if (user != null) {
+            request.getSession().setAttribute("user", userService.findUserByUsername(user.getUsername()));
+            System.out.println(user);
         }
 
         String path = "/WEB-INF/Home.html";
@@ -85,6 +92,7 @@ public class GoToHomePage extends HttpServlet {
         ctx.setVariable("services", services);
         ctx.setVariable("service_packages", servicePackages);
         ctx.setVariable("suspended", suspendedOrders);
+        ctx.setVariable("error_message", request.getParameter("error_message"));
         templateEngine.process(path, ctx, response.getWriter());
     }
 
@@ -95,7 +103,6 @@ public class GoToHomePage extends HttpServlet {
 
     public void destroy() {
     }
-
 
 
 }

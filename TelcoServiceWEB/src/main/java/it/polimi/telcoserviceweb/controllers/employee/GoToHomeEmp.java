@@ -34,7 +34,6 @@ public class GoToHomeEmp extends HttpServlet{
     private OptionalProductService opService;
     @EJB(name = "it.polimi.telcoserviceejb.entities.ValidityPeriodService")
     private ValidityPeriodService validityPeriodService;
-
     @EJB(name = "it.polimi.telcoserviceejb.entities.ServiceService")
     private ServiceService serviceService;
     @EJB(name = "it.polimi.telcoserviceejb.entities.ServicePackageService")

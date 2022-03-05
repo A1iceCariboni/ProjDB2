@@ -51,12 +51,17 @@ public class AddOptionalProduct extends HttpServlet {
             if (name == null || strFee == null || name.isEmpty() || strFee.isEmpty()) {
                 throw new Exception("Missing or empty fields");
             }
-
+            float fee = Float.parseFloat(strFee);
+            if (fee >= 0) {
+                opService.createOptionalProduct(name, fee);
+            }else {
+                throw new Exception("Can't insert a negative fee");
+            }
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty fields");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
             return;
         }
-        opService.createOptionalProduct(name, Float.parseFloat(strFee));
+
         String path;
         path = getServletContext().getContextPath() + "/GoToHomeEmp";
         response.sendRedirect(path);

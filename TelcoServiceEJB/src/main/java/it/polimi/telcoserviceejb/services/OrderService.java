@@ -110,13 +110,17 @@ public class OrderService {
             System.out.println(order);
             em.refresh(order);
             return order;
-        } catch (PersistenceException e) {
+        } catch (PersistenceException | IndexOutOfBoundsException e) {
             throw new PersistenceException("Couldn't load data");
         }
     }
 
-    public void changeStatus(int id_order, String status_payment) throws PersistenceException {
+    public void changeStatus(int id_order, String status_payment, int id_user) throws PersistenceException, ServiceException {
         Order order = getOrderById(id_order);
+        if(order.getUser().getId() != id_user){
+            throw new ServiceException("You can't update an order that doesn't belong to you");
+        }
+
         if(order.getStatus().equals("approved")){
             throw new PersistenceException("Incoherent data to be sent");
         } else {

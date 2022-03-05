@@ -39,8 +39,6 @@ public class CreateOrder extends HttpServlet {
     @EJB(name = "it.polimi.telcoserviceejb.entities.OptionalProductService")
     private OptionalProductService opService;
 
-    private CookieManager cookieManager = new CookieManager();
-
     public CreateOrder() {
         super();
     }
@@ -72,10 +70,10 @@ public class CreateOrder extends HttpServlet {
             try {
                 if (submitted_form) {
                     // logged and submitted form: retrieve info from form
-                    cookies = cookieManager.generateCookieMap(id_service_package, id_validity_period, ids_optional_product, start_date_subscription);
+                    cookies = CookieManager.generateCookieMap(id_service_package, id_validity_period, ids_optional_product, start_date_subscription);
                 } else {
                     // logged and no submission: retrieve info from cookies
-                    cookies = cookieManager.getOrderInfoCookie(request);
+                    cookies = CookieManager.getOrderInfoCookie(request);
                 }
 
                 System.out.println(cookies);
@@ -96,7 +94,7 @@ public class CreateOrder extends HttpServlet {
                         (Date) cookies.get("start_date_subscription")
                 );
 
-                cookieManager.makeOrderCookieExpire(request, response);
+                CookieManager.makeOrderCookieExpire(request, response);
                 response.addCookie(new Cookie("order_to_see", id_order.toString()));
             } catch (ServiceException e) {
                 e.printStackTrace();
