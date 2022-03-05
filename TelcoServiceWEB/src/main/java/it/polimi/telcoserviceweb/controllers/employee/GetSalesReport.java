@@ -171,6 +171,7 @@ public class GetSalesReport extends HttpServlet {
     private void loadData(HttpServletResponse response, WebContext ctx) throws IOException {
         try {
             ctx.setVariable("insolvents", userService.getInsolvents());
+            System.out.println("Users: " + userService.getInsolvents());
             ctx.setVariable("rejected", orderService.getSuspended());
             ctx.setVariable("alerts", alertService.getAllAlerts());
             ctx.setVariable("bestseller", optionalProductService.getBestSellers());

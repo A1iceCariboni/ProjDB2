@@ -129,4 +129,15 @@ public class OrderService {
             }
         }
     }
+
+    public List<Order> getOrdersPerUser(Integer id_user) throws PersistenceException{
+        List<Order> orders = null;
+        try {
+            orders = em.createNamedQuery("Order.getOrdersPerUser", Order.class).setParameter(1, id_user)
+                    .getResultList();
+        } catch (PersistenceException e) {
+            throw new PersistenceException("Couldn't load data");
+        }
+        return orders;
+    }
 }

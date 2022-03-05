@@ -53,6 +53,7 @@ public class UserService {
         List<User> users = null;
         try {
             users = em.createNamedQuery("User.getInsolventUsers", User.class).getResultList();
+            System.out.println(users);
         } catch (PersistenceException e) {
             throw new Exception("Couldn't load data");
         }

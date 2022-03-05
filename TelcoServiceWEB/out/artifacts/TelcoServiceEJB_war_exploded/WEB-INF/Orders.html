@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your orders</title>
+
+    <link rel="stylesheet" type="text/css" media="all"
+          href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}"/>
+    <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+</head>
+<body>
+<div align="right">
+    <a href="Home">Go Back</a>
+</div>
+<div>
+    <h5>Your orders:</h5>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Total value</th>
+            <th>Number of failed payments</th>
+            <th>Start date of sub</th>
+            <th>Creation date</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="o : ${orders}">
+            <td th:text="${o.getId()}"></td>
+            <td th:text="${o.getTotalValue()}"></td>
+            <td th:text="${o.getNumberOfFailedPayment()}"></td>
+            <td th:text="${o.getStartDateSub()}"></td>
+            <td th:text="${o.getCreationDate()}"></td>
+            <td th:text="${o.getStatus()}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

@@ -42,5 +42,6 @@
         <url-pattern>/AddOptionalProduct</url-pattern>
         <url-pattern>/CreateServicePackage</url-pattern>
         <url-pattern>/GetSalesReport</url-pattern>
+        <url-pattern>/GetOrders</url-pattern>
     </filter-mapping>
 </web-app>

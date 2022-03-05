@@ -24,6 +24,7 @@
 <div align="right" th:if="${session.user != null}">
     <p th:text="${'Hello, ' + session.user.username }"></p>
     <a th:href="@{/Logout}">Logout</a><br>
+    <a th:href="@{/GetOrders}">Click here to see your orders</a>
     <h5>Suspended orders:</h5>
     <table>
         <thead>
