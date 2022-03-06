@@ -51,10 +51,20 @@ public class CreateServicePackage extends HttpServlet {
         List<Integer> services_ids = null;
 
         try {
+            String[] str_vp_ids = request.getParameterValues("vp");
+            String[] str_ops_ids = request.getParameterValues("ops");
+            String[] str_servs_ids = request.getParameterValues("servs");
+
+            if (str_vp_ids == null || str_vp_ids.length == 0 || str_servs_ids == null || str_servs_ids.length == 0) {
+                throw new Exception("Missing or empty fields");
+            }
+
             name = StringEscapeUtils.escapeJava(request.getParameter("name"));
-            validity_periods_ids = Arrays.stream(request.getParameterValues("vp")).map(Integer::parseInt).collect(Collectors.toList());
-            optional_products_ids = Arrays.stream(request.getParameterValues("ops")).map(Integer::parseInt).collect(Collectors.toList());
-            services_ids = Arrays.stream(request.getParameterValues("servs")).map(Integer::parseInt).collect(Collectors.toList());
+            validity_periods_ids = Arrays.stream(str_vp_ids).map(Integer::parseInt).collect(Collectors.toList());
+            services_ids = Arrays.stream(str_servs_ids).map(Integer::parseInt).collect(Collectors.toList());
+            if (str_ops_ids != null && str_ops_ids.length != 0) {
+                optional_products_ids = Arrays.stream(str_ops_ids).map(Integer::parseInt).collect(Collectors.toList());
+            }
 
             if (name == null || name.isEmpty() || validity_periods_ids.isEmpty() || services_ids.isEmpty()) {
                 throw new Exception("Missing or empty fields");
@@ -70,6 +80,7 @@ public class CreateServicePackage extends HttpServlet {
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
             return;
         }
+
         String path;
         path = getServletContext().getContextPath() + "/GoToHomeEmp";
         response.sendRedirect(path);
@@ -78,12 +89,9 @@ public class CreateServicePackage extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        String path = "/WEB-INF/HomeEmp.html";
-        ServletContext servletContext = getServletContext();
-        final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-
-        templateEngine.process(path, ctx, response.getWriter());
+        String path;
+        path = getServletContext().getContextPath() + "/GoToHomeEmp";
+        response.sendRedirect(path);
     }
 
     public void destroy() {

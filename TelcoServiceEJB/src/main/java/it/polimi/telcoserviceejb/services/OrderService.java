@@ -72,17 +72,6 @@ public class OrderService {
         return o.getId();
     }
 
-    public List<OptionalProduct> getAllOptionalProduct() throws ProductException {
-        List<OptionalProduct> ops = null;
-        try {
-            ops = em.createNamedQuery("OptionalProduct.findAll", OptionalProduct.class).getResultList();
-        } catch (PersistenceException e) {
-            throw new ProductException("Cannot load optional products");
-        }
-
-        return ops;
-    }
-
     public List<Order> getSuspended() throws Exception {
         List<Order> orders = null;
         try {
