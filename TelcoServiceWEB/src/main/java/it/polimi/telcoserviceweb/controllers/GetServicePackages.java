@@ -39,14 +39,17 @@ public class GetServicePackages extends HttpServlet {
         ServicePackage servicePackage = null;
         String id_sp = request.getParameter("id_service_package");
 
-            if (id_sp != null && !id_sp.isEmpty()) {
+        if (id_sp != null && !id_sp.isEmpty()) {
+            try {
                 servicePackage = servicePackageService.getServicePackageById(Integer.parseInt(id_sp));
+            } catch (ServiceException e) {
+                System.out.println(e.getMessage());
             }
+        }
 
         System.out.println(servicePackage);
 
         try {
-
             System.out.println((new Gson()).toJson(servicePackage));
         } catch (Exception e) {
             e.printStackTrace();

@@ -84,7 +84,7 @@ public class GetSalesReport extends HttpServlet {
         try {
             servicePackages = servicePackageService.getAllServicePackage();
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to get data");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             return;
         }
         reportType = StringEscapeUtils.escapeJava(request.getParameter("reportType"));
@@ -93,7 +93,7 @@ public class GetSalesReport extends HttpServlet {
         try {
             idPurch = Integer.parseInt(request.getParameter("sp"));
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Empty fields");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "not int id for service package");
             return;
         }
         switch (reportType) {
