@@ -1,96 +1,140 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<meta charset="ISO-8859-1">
-<link
-        rel="stylesheet" type="text/css" media="all"
-        href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}"/>
-<link
-        rel="stylesheet"
-        href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-/>
-<link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"
-/>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <title>Approve payment</title>
 
-<title>Home</title>
-<div align="right" th:if="${session.user != null}">
-    <p th:text="${'Hello, ' + session.user.username }"></p>
-    <a th:href="@{/Logout}">Logout</a> or <a th:href="@{/Home}">Return To Home</a>
-</div>
-<div align="right" th:if="${session.user == null}">
-    <a th:href="@{/CheckLogin}">Login or Register</a> or <a th:href="@{/Home}">Return To Home</a>
-</div>
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+            integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+            crossorigin="anonymous"
+    />
 
-<h4>Order Summary:</h4>
-<div>
-    <div th:if="${order == null}">Impossible to see order</div>
-    <table th:unless="${order == null}">
-        <thead>
-        <tr>
-            <th>Service package</th>
-            <th>Validity period</th>
-            <th>Optional Products</th>
-            <th>Total amount</th>
-            <th>Status</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td th:text="${order.getServicePackage().getName()}"> Nome Package</td>
-            <td th:text="|${order.getValidityPeriod().getMonths()} months per ${order.getValidityPeriod().getFee()} euros|">
-                12
-                months per
-                10.99€
-            </td>
-            <td>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Monthly fee</th>
-                    </tr>
-                    </thead>
-                    <tr th:if="${!order.getOptionalProducts().isEmpty()}" th:each="op : ${order.getOptionalProducts()}">
-                        <td th:text="${op.getName()}"></td>
-                        <td th:text="${op.getMonthlyFee()}"></td>
-                    </tr>
-                    <tr th:unless="${!order.getOptionalProducts().isEmpty()}">
-                        <td>None</td>
-                    </tr>
-                </table>
-            </td>
-            <td th:text="|${order.getTotalValue()} euros|"> 200.53 euros</td>
-            <td th:text="|${order.getStatus()} (${order.getNumberOfFailedPayment()})|"></td>
-        </tr>
-        <tr th:if="${session.user != null}">
-            <td th:if="${order.getStatus().equals('waiting') || order.getStatus().equals('rejected')}">
-                <form action="Confirmation" method="POST">
-                    <select id="status_payment" name="status_payment" class="select-multiple" required>
-                        <option value="approved">accept</option>
-                        <option value="rejected">reject</option>
-                    </select>
-                    <input type="submit" value="Pay">
-                </form>
-            </td>
-            <td th:if="${order.getStatus().equals('not_created')}">
-                <form action="CreateOrder" method="POST">
-                    <input type="submit" value="Confirm">
-                </form>
-            </td>
-            <td th:if="${order.getStatus().equals('approved')}">The order has been approved!</td>
-        </tr>
-        <tr th:unless="${session.user != null}">
-            <td>You have to log in in order to pay for the order</td>
-        </tr>
+    <link rel="stylesheet" href="css/mystyle.css"/>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <div class="content">
+                <div class="navbar-content">
+                    <span class="navbar-brand mb-0 h1">Telco</span>
+                    <div class="dx">
+                <span th:if="${session.user != null}">
+                  <span class="name text-white mx-5 text-nowrap" th:text="${'Hello, ' + session.user.username}">
+                    Hello, Alice
+                  </span>
+                  <a class="logout btn btn-secondary btn-sm" th:href="@{/Logout}">
+                    Logout
+                  </a>
+                </span>
+                        <span th:unless="${session.user != null}">
+                  <a class="logout btn btn-secondary btn-sm" th:href="@{/Logout}">
+                      Login or register
+                  </a>
+                </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <section class="title mt-5">
+        <div class="container">
+            <div class="content">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 class="title m-0">Order Summary</h1>
+                        <a href="Home">⬅ Return to Home</a>
+                        <hr/>
+                    </div>
+                </div>
+                <!-- cta -->
+                <!-- end cta -->
+                <div class="row">
+                    <div class="col">
+                        <div th:unless="${session.user != null}">You have to log in in order to pay for the order</div>
+                        <div class="d-flex justify-content-end" th:if="${session.user != null}">
+                            <span th:if="${order.getStatus().equals('waiting') || order.getStatus().equals('rejected')}">
+                                <form class="my-3 mx-2 p-0" action="Confirmation" method="post">
+                                    <input type="text" name="status_payment" value="approved" hidden/>
+                                    <button class="btn btn-primary btn-sm btn-success">
+                                        Accept Payment
+                                    </button>
+                                </form>
+                                <form class="my-3 mx-2 p-0" action="Confirmation" method="post">
+                                    <input type="text" name="status_payment" value="rejected" hidden/>
+                                    <button class="btn btn-primary btn-sm btn-danger">
+                                        Decline Payment
+                                    </button>
+                                </form>
+                            </span>
+                            <span th:if="${order.getStatus().equals('not_created')}">
+                                <form action="CreateOrder" method="POST">
+                                    <input type="submit" value="Confirm">
+                                </form>
+                            </span>
+                            <span th:if="${order.getStatus().equals('approved')}">
+                                The order has been approved!
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section></section>
+</header>
 
-        </tbody>
-    </table>
-</div>
-
+<main>
+    <div class="content">
+        <div class="container">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Service Package</th>
+                    <th scope="col">Validity</th>
+                    <th scope="col">Optional Products</th>
+                    <th scope="col">Total Amount</th>
+                    <th scope="col">Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${order.getServicePackage().getName()}">Mark</td>
+                    <td th:text="|${order.getValidityPeriod().getMonths()} months per ${order.getValidityPeriod().getFee()} euros|">
+                        12 m
+                    </td>
+                    <td th:unless="${!order.getOptionalProducts().isEmpty()}">None</td>
+                    <td th:if="${!order.getOptionalProducts().isEmpty()}">
+                        <!-- inner table -->
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Monthly fee</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="op : ${order.getOptionalProducts()}">
+                                <td th:text="${op.getName()}">Mark</td>
+                                <td th:text="${op.getMonthlyFee()}">8</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <!-- end inner table -->
+                    <td th:text="|${order.getTotalValue()} euros|">99</td>
+                    <td th:text="|${order.getStatus()} (${order.getNumberOfFailedPayment()})|"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+<footer></footer>
 </body>
 </html>

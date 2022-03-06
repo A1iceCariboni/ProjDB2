@@ -27,12 +27,10 @@ public class GoToHomePage extends HttpServlet {
     private OptionalProductService opService;
     @EJB(name = "it.polimi.telcoserviceejb.entities.ValidityPeriodService")
     private ValidityPeriodService validityPeriodService;
-
     @EJB(name = "it.polimi.telcoserviceejb.entities.ServiceService")
     private ServiceService serviceService;
     @EJB(name = "it.polimi.telcoserviceejb.entities.ServicePackageService")
     private ServicePackageService servicePackageService;
-
     @EJB(name = "it.polimi.telcoserviceejb.entities.OrderService")
     private OrderService orderService;
     @EJB(name = "it.polimi.telcoserviceejb.entities.UserService")
@@ -84,7 +82,7 @@ public class GoToHomePage extends HttpServlet {
             System.out.println(user);
         }
 
-        String path = "/WEB-INF/Home.old.html";
+        String path = "/WEB-INF/Home.html";
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
         ctx.setVariable("ops", ops);
@@ -92,7 +90,6 @@ public class GoToHomePage extends HttpServlet {
         ctx.setVariable("services", services);
         ctx.setVariable("service_packages", servicePackages);
         ctx.setVariable("suspended", suspendedOrders);
-        ctx.setVariable("error_message", request.getParameter("error_message"));
         templateEngine.process(path, ctx, response.getWriter());
     }
 
