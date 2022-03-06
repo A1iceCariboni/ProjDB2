@@ -92,7 +92,7 @@ public class Confirmation extends HttpServlet {
                 System.out.println("CONFIRMATION: not logged COOKIE");
                 // if not logged
                 order = generateOrderFromCookies(request);
-            } catch (ServiceException | PersistenceException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 order = null;
             }
@@ -102,7 +102,7 @@ public class Confirmation extends HttpServlet {
                 // when user did an order but wasn't logged
                 order = generateOrderFromCookies(request);
                 System.out.println("CONFIRMATION: logged and COOKIE");
-            } catch (PersistenceException | IndexOutOfBoundsException | ServiceException e) {
+            } catch (Exception e) {
                 try {
                     order = getOrderFromIdCookie(request);
                     if (order.getUser().getId() != user.getId()) {
