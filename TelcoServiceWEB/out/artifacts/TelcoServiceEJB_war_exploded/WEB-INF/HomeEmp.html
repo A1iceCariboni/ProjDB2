@@ -83,7 +83,7 @@
                     <label for="fee">Monthly fee</label>
                     <div class="input-group">
                       <div class="input-group-prepend">
-                        <div class="input-group-text">€</div>
+                        <div class="input-group-text">euro</div>
                       </div>
                       <input
                         type="number"
@@ -147,6 +147,7 @@
                       name="servs"
                       class="selectpicker"
                       multiple
+                      required
                     ><option th:each="s :${services}" th:value="${s.getId()}"
                              th:text="|Id: ${s.getId()} / Type: ${s.getType()} |">Free giga
                     </option>
@@ -173,7 +174,7 @@
             <div class="row">
               <div class="col-12 col-lg-6">
                 <!-- service packages table -->
-                <h2>Service Packages 📦</h2>
+                <h2>Service Packages</h2>
                 <table class="table">
                   <thead>
                     <tr>
@@ -192,7 +193,7 @@
               </div>
               <div class="col-12 col-lg-6">
                 <!-- optional products table -->
-                <h2>Optional Products 📱</h2>
+                <h2>Optional Products</h2>
                 <table class="table">
                   <thead>
                     <tr>
@@ -215,7 +216,7 @@
             <div class="row">
               <div class="col-12 col-lg-6">
                 <!-- valid period table -->
-                <h2>Avaible Validity Period 📅</h2>
+                <h2>Avaible Validity Period</h2>
                 <table class="table">
                   <thead>
                     <tr>
@@ -239,7 +240,7 @@
             <div class="row">
               <div class="col-12 col-lg-6">
                 <!-- services avaible  -->
-                <h2>Services Avaible 🧮 </h2>
+                <h2>Services Avaible</h2>
                 <table class="table">
                   <thead>
                     <tr>

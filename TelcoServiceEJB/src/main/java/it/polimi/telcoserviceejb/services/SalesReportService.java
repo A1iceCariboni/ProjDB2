@@ -27,10 +27,10 @@ public class SalesReportService {
             throw new ReportException("Couldn't fetch service package");
         }
         Long i = null;
-        try{
-           i = em.createNamedQuery("SalesReport.getTotalNumberPerPackage", Long.class).setParameter(1, sp).getSingleResult();
+        try {
+            i = em.createNamedQuery("SalesReport.getTotalNumberPerPackage", Long.class).setParameter(1, sp).getSingleResult();
         }catch (PersistenceException e){
-            throw new ReportException("Cannot find service package");
+            i = (long) 0;
         }
 
         return i != null ? i : 0;
@@ -53,7 +53,7 @@ public class SalesReportService {
         try{
             i = em.createNamedQuery("SalesReport.getTotalNumberPerPackageAndVP", Integer.class).setParameter(1, sp).setParameter(2, vp).getSingleResult();
         }catch (PersistenceException e){
-            throw new ReportException("Cannot find service package");
+            i = 0;
         }
 
         return i != null ? i : 0;
@@ -70,7 +70,7 @@ public class SalesReportService {
         try{
             i = em.createNamedQuery("SalesReport.valueNoOptProducts", Double.class).setParameter(1, sp).getSingleResult();
         }catch (PersistenceException e){
-            throw new ReportException("Cannot find service package");
+            i = (double) 0;
         }
 
         return i != null ? i : 0;
@@ -85,12 +85,13 @@ public class SalesReportService {
             throw new ReportException("Couldn't fetch service package");
         }
         Double i = null;
-        try{
+        try {
             i = em.createNamedQuery("SalesReport.valueWithOptProducts", Double.class).setParameter(1, sp).getSingleResult();
         }catch (PersistenceException e){
-            throw new ReportException("Cannot find service package");
+            i = (double) 0;
         }
         if(i == null) i = (double) 0;
+
         if(j == null) j = (double) 0;
         return  i + j;
     }
@@ -103,11 +104,12 @@ public class SalesReportService {
             throw new ReportException("Couldn't fetch service package");
         }
         Double i = null;
-        try{
+        try {
             i = em.createNamedQuery("SalesReport.avgNumberOfOpt", Double.class).setParameter(1, sp).getSingleResult();
         }catch (PersistenceException e){
-            throw new ReportException("Cannot find service package");
+            i = (double) 0;
         }
+        if(i == null) i = (double) 0;
 
         return i;
     }
