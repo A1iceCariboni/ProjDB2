@@ -1,32 +1,58 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
 
-<meta charset="ISO-8859-1">
+    <link rel="stylesheet" type="text/css" media="all"
+          href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}"/>
+    <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript" src="js/script.js" th:href="@{js/script.js}" defer></script>
 
-<link rel="stylesheet" type="text/css" media="all"
-      href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}"/>
-<link
-        rel="stylesheet"
-        href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-/>
-<link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css"
-/>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
-<script src="js/script.js"></script>
-
-<title>Home</title>
+    <title>Home</title>
+</head>
+<body onload="initHome()" >
 <div align="right" th:if="${session.user != null}">
     <p th:text="${'Hello, ' + session.user.username }"></p>
-    <a th:href="@{/Logout}">Logout</a>
+    <a th:href="@{/Logout}">Logout</a><br>
+    <a th:href="@{/GetOrders}">Click here to see your orders</a>
+    <div class="ui-state-error-text" th:if="${error_message!=null}" th:text="${error_message}">messaggio da scrivere</div>
+    <h5 th:unless="${session.user.insolvent}">You paid for all of your orders</h5>
+    <h5 th:if="${session.user.insolvent}">Suspended orders:</h5>
+    <table th:if="${session.user.insolvent}">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="s : ${suspended}">
+            <td th:text="${s.getId()}"></td>
+            <td th:text="${s.getStatus()}"></td>
+            <td>
+                <form action="RetryPayment" method="POST">
+                    <input th:value="${s.getId()}" name="idorder" hidden>
+                    <button type = "submit">Pay</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 <div align="right" th:if="${session.user == null}">
     <a th:href="@{/CheckLogin}">Login or Register</a>
 </div>
-
 <h4>Make order form:</h4>
 <div>
     <form action="CreateOrder" method="POST">
@@ -65,31 +91,6 @@
                 <td>
                     <input id="start_date_subscription" type="date" name="start_date_subscription" min="" required>
                 </td>
-                <script>
-                    // in order to have dynamic choosing of optional products or validity periods
-                    document.getElementById("sp").addEventListener("change", ev => {
-                        let id_sp = parseInt(document.getElementById("sp").value);
-                        console.log("clicked on " + id_sp)
-                        getServicePackages(id_sp, generateBoxesHome);
-                    });
-                    getServicePackages(parseInt(document.getElementById("sp").value), generateBoxesHome);
-
-                    // to set the minimum date as today
-                    var today = new Date();
-                    var dd = today.getDate();
-                    var mm = today.getMonth() + 1; //January is 0!
-                    var yyyy = today.getFullYear();
-
-                    if (dd < 10) {
-                        dd = '0' + dd;
-                    }
-
-                    if (mm < 10) {
-                        mm = '0' + mm;
-                    }
-
-                    document.getElementById("start_date_subscription").setAttribute("min", yyyy + '-' + mm + '-' + dd)
-                </script>
             </tr>
             <tr>
                 <td>
@@ -180,4 +181,6 @@
     </tbody>
 </table>
 </body>
+<script>
+</script>
 </html>

@@ -56,6 +56,8 @@ function generateBoxesHome(sp) {
     changeOptionalProductsOptions(sp);
     $(".select-multiple").selectpicker();
     $('.select-multiple').selectpicker('refresh');
+    $(".selectpicker").selectpicker();
+    $('.selectpicker').selectpicker('refresh');
 }
 
 function changeValidityPeriodOptions(sp) {

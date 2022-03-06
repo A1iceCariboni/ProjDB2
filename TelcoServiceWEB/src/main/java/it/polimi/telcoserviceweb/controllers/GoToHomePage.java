@@ -84,7 +84,7 @@ public class GoToHomePage extends HttpServlet {
             System.out.println(user);
         }
 
-        String path = "/WEB-INF/Home.html";
+        String path = "/WEB-INF/Home.old.html";
         ServletContext servletContext = getServletContext();
         final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
         ctx.setVariable("ops", ops);
