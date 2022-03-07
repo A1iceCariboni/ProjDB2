@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,7 +54,11 @@ public class CreateServicePackage extends HttpServlet {
         try {
             name = StringEscapeUtils.escapeJava(request.getParameter("name"));
             validity_periods_ids = Arrays.stream(request.getParameterValues("vp")).map(Integer::parseInt).collect(Collectors.toList());
-            optional_products_ids = Arrays.stream(request.getParameterValues("ops")).map(Integer::parseInt).collect(Collectors.toList());
+            if(request.getParameter("ops") != null) {
+                optional_products_ids = Arrays.stream(request.getParameterValues("ops")).map(Integer::parseInt).collect(Collectors.toList());
+            }else{
+                optional_products_ids = new ArrayList<>();
+            }
             services_ids = Arrays.stream(request.getParameterValues("servs")).map(Integer::parseInt).collect(Collectors.toList());
 
             if (name == null || name.isEmpty() || validity_periods_ids.isEmpty() || services_ids.isEmpty()) {
