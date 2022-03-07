@@ -3,7 +3,6 @@ package it.polimi.telcoserviceweb.controllers;
 import it.polimi.telcoserviceejb.entities.User;
 import it.polimi.telcoserviceejb.exceptions.ServiceException;
 import it.polimi.telcoserviceejb.services.*;
-import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -18,11 +17,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.text.SimpleDateFormat;
 
 @WebServlet("/CreateOrder")
 public class CreateOrder extends HttpServlet {
@@ -73,7 +69,7 @@ public class CreateOrder extends HttpServlet {
                     cookies = CookieManager.generateCookieMap(id_service_package, id_validity_period, ids_optional_product, start_date_subscription);
                 } else {
                     // logged and no submission: retrieve info from cookies
-                    cookies = CookieManager.getOrderInfoCookie(request);
+                    cookies = CookieManager.getOrderInfoCookies(request);
                 }
 
                 System.out.println(cookies);
@@ -103,7 +99,7 @@ public class CreateOrder extends HttpServlet {
             }
         } else {
             // not logged: generate cookie if necessary
-            if (submitted_form) {
+                if (submitted_form) {
                 // not logged and submitted form: create cookies
                 System.out.println(id_service_package);
                 System.out.println(id_validity_period);

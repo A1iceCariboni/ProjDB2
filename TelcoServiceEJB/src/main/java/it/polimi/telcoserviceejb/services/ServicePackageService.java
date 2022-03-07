@@ -24,30 +24,37 @@ public class ServicePackageService {
     public void createServicePackage(String name, List<Integer> valPerIds, List<Integer> opProdIds, List<Integer> servIds) throws ServiceException {
         List<ValidityPeriod> validityPeriods = new ArrayList<>();
         ValidityPeriod vp;
-        for(int i : valPerIds){
+        if (valPerIds == null || valPerIds.isEmpty() || servIds == null || servIds.isEmpty()) {
+            throw new ServiceException("Empty fields!");
+        }
+
+        for (int i : valPerIds) {
             try {
                 vp = em.find(ValidityPeriod.class, i);
-            }catch(PersistenceException e){
+            } catch (PersistenceException e) {
                 throw new ServiceException("Couldn't fetch validity period");
             }
             validityPeriods.add(vp);
         }
         List<OptionalProduct> optionalProducts = new ArrayList<>();
         OptionalProduct op;
-        for(int i : opProdIds){
-            try {
-                op = em.find(OptionalProduct.class, i);
-            }catch(PersistenceException e){
-                throw new ServiceException("Couldn't fetch optional product");
+        if (opProdIds != null && !opProdIds.isEmpty()) {
+            for (int i : opProdIds) {
+                try {
+                    op = em.find(OptionalProduct.class, i);
+                } catch (PersistenceException e) {
+                    throw new ServiceException("Couldn't fetch optional product");
+                }
+                optionalProducts.add(op);
             }
-            optionalProducts.add(op);
         }
+
         List<Service> services = new ArrayList<>();
         Service s;
-        for(int i : servIds){
+        for (int i : servIds) {
             try {
                 s = em.find(Service.class, i);
-            }catch(PersistenceException e){
+            } catch (PersistenceException e) {
                 throw new ServiceException("Couldn't fetch service");
             }
             services.add(s);

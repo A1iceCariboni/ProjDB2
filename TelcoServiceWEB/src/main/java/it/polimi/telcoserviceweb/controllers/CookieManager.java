@@ -44,7 +44,7 @@ public class CookieManager {
     /**
      * returns the map of the order info from the cookies
      */
-    public static Map<String, Object> getOrderInfoCookie(HttpServletRequest request) throws ParseException {
+    public static Map<String, Object> getOrderInfoCookies(HttpServletRequest request) throws ParseException {
         String[] ids = new String[4];
 
         // getting the order infos

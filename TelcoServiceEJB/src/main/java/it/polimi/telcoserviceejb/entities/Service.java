@@ -18,21 +18,21 @@ public class Service {
     private Integer numberMinutes;
 
     @Column(name = "fee_minutes")
-    private Integer feeMinutes;
+    private Float feeMinutes;
 
     @Column(name = "number_SMS")
     private Integer numberSms;
 
     @Column(name = "fee_SMS")
-    private Integer feeSms;
+    private Float feeSms;
 
     @Column(name = "number_giga")
     private Integer numberGiga;
 
     @Column(name = "fee_giga")
-    private Integer feeGiga;
+    private Float feeGiga;
 
-    public Service(String type, Integer numberMinutes, Integer feeMinutes, Integer numberSms, Integer feeSms, Integer numberGiga, Integer feeGiga) {
+    public Service(String type, Integer numberMinutes, Float feeMinutes, Integer numberSms, Float feeSms, Integer numberGiga, Float feeGiga) {
         this.type = type;
         this.numberMinutes = numberMinutes;
         this.feeMinutes = feeMinutes;
@@ -46,11 +46,11 @@ public class Service {
 
     }
 
-    public Integer getFeeGiga() {
+    public Float getFeeGiga() {
         return feeGiga;
     }
 
-    public void setFeeGiga(Integer feeGiga) {
+    public void setFeeGiga(Float feeGiga) {
         this.feeGiga = feeGiga;
     }
 
@@ -62,11 +62,11 @@ public class Service {
         this.numberGiga = numberGiga;
     }
 
-    public Integer getFeeSms() {
+    public Float getFeeSms() {
         return feeSms;
     }
 
-    public void setFeeSms(Integer feeSms) {
+    public void setFeeSms(Float feeSms) {
         this.feeSms = feeSms;
     }
 
@@ -78,11 +78,11 @@ public class Service {
         this.numberSms = numberSms;
     }
 
-    public Integer getFeeMinutes() {
+    public Float getFeeMinutes() {
         return feeMinutes;
     }
 
-    public void setFeeMinutes(Integer feeMinutes) {
+    public void setFeeMinutes(Float feeMinutes) {
         this.feeMinutes = feeMinutes;
     }
 
