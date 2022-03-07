@@ -1,9 +1,6 @@
 package it.polimi.telcoserviceweb.controllers.employee;
 
-import it.polimi.telcoserviceejb.entities.OptionalProduct;
-import it.polimi.telcoserviceejb.entities.Service;
-import it.polimi.telcoserviceejb.entities.ServicePackage;
-import it.polimi.telcoserviceejb.entities.ValidityPeriod;
+import it.polimi.telcoserviceejb.entities.*;
 import it.polimi.telcoserviceejb.services.OptionalProductService;
 import it.polimi.telcoserviceejb.services.ServicePackageService;
 import it.polimi.telcoserviceejb.services.ServiceService;
@@ -59,6 +56,13 @@ public class GoToHomeEmp extends HttpServlet{
         List<ValidityPeriod> validityPeriods = null;
         List<Service> services = null;
         List<ServicePackage> servicePackages = null;
+
+        // checking if logged as employee
+        if(request.getSession().getAttribute("employee") == null){
+            response.sendRedirect(request.getServletContext().getContextPath() + "/index.html");
+            return;
+        }
+
         try{
             ops = opService.getAllOptionalProduct();
             validityPeriods = validityPeriodService.getAllValidityPeriod();

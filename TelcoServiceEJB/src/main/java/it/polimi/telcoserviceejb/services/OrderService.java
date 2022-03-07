@@ -105,17 +105,23 @@ public class OrderService {
     }
 
     public void changeStatus(int id_order, String status_payment, int id_user) throws PersistenceException, ServiceException {
-        Order order = getOrderById(id_order);
-        if(order.getUser().getId() != id_user){
+        Order order = null;
+        try {
+            order = getOrderById(id_order);
+        } catch (Exception e) {
+            throw new ServiceException("Order with this id doesn't exist");
+        }
+
+        if (order.getUser().getId() != id_user) {
             throw new ServiceException("You can't update an order that doesn't belong to you");
         }
 
-        if(order.getStatus().equals("approved")){
+        if (order.getStatus().equals("approved")) {
             throw new PersistenceException("Incoherent data to be sent");
         } else {
-            if(status_payment.equals("approved")){
+            if (status_payment.equals("approved")) {
                 order.setStatus(status_payment);
-            } else if(status_payment.equals("rejected")) {
+            } else if (status_payment.equals("rejected")) {
                 order.setTimeLastRejection(new Date(System.currentTimeMillis()));
             } else {
                 throw new PersistenceException("Wrong status update");
@@ -123,7 +129,7 @@ public class OrderService {
         }
     }
 
-    public List<Order> getOrdersPerUser(Integer id_user) throws PersistenceException{
+    public List<Order> getOrdersPerUser(Integer id_user) throws PersistenceException {
         List<Order> orders = null;
         try {
             orders = em.createNamedQuery("Order.getOrdersPerUser", Order.class).setParameter(1, id_user)

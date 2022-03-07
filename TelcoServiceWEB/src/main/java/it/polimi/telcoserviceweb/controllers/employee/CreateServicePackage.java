@@ -46,6 +46,12 @@ public class CreateServicePackage extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // checking if logged as employee
+        if(request.getSession().getAttribute("employee") == null){
+            response.sendRedirect(request.getServletContext().getContextPath() + "/index.html");
+            return;
+        }
+
         String name = null;
         List<Integer> validity_periods_ids = null;
         List<Integer> optional_products_ids = null;
@@ -75,6 +81,7 @@ public class CreateServicePackage extends HttpServlet {
             response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
             return;
         }
+
         String path;
         path = getServletContext().getContextPath() + "/GoToHomeEmp";
         response.sendRedirect(path);
@@ -83,12 +90,9 @@ public class CreateServicePackage extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        String path = "/WEB-INF/HomeEmp.html";
-        ServletContext servletContext = getServletContext();
-        final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-
-        templateEngine.process(path, ctx, response.getWriter());
+        String path;
+        path = getServletContext().getContextPath() + "/GoToHomeEmp";
+        response.sendRedirect(path);
     }
 
     public void destroy() {

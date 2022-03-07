@@ -53,6 +53,12 @@ public class GetSalesReport extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // checking if logged as employee
+        if(request.getSession().getAttribute("employee") == null){
+            response.sendRedirect(request.getServletContext().getContextPath() + "/index.html");
+            return;
+        }
+
         List<ServicePackage> servicePackages = null;
         try {
             servicePackages = servicePackageService.getAllServicePackage();
@@ -80,6 +86,12 @@ public class GetSalesReport extends HttpServlet {
         Integer rep_2 = 0;
         Double rep_3 = (double) 0, rep_4 = (double) 0, rep_5 = (double) 0;
         List<ServicePackage> servicePackages = null;
+
+        // checking if logged as employee
+        if(request.getSession().getAttribute("employee") == null){
+            response.sendRedirect(request.getServletContext().getContextPath() + "/index.html");
+            return;
+        }
 
         try {
             servicePackages = servicePackageService.getAllServicePackage();

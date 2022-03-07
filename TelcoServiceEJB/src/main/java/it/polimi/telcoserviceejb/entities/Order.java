@@ -35,19 +35,23 @@ public class Order {
     @Column(name = "creation_date")
     private Timestamp creationDate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "id_user")
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "id_service_package")
     private ServicePackage servicePackage;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "id_validity_period")
     private ValidityPeriod validityPeriod;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.REFRESH})
     @JoinTable(name = "optional_product__order",
             joinColumns = @JoinColumn(name = "id_order"),
             inverseJoinColumns = @JoinColumn(name = "id_optional_product"))

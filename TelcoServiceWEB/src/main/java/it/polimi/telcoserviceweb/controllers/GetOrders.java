@@ -45,7 +45,7 @@ public class GetOrders extends HttpServlet {
         List<Order> orders = null;
         User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "You have to be logged to view an order!");
+            response.sendRedirect(request.getServletContext().getContextPath() + "/index.html");
             return;
         }
         try {

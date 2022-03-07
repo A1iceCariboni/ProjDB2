@@ -73,7 +73,7 @@ public class CheckLogin extends HttpServlet {
             path = "/index.html";
             templateEngine.process(path, ctx, response.getWriter());
         } else {
-            if (Arrays.stream(request.getCookies()).map(Cookie::getName).filter(s -> s.equals("op") || s.equals("sd") || s.equals("sp") || s.equals("vp")).count() == 4) {
+            if (request.getCookies() != null && Arrays.stream(request.getCookies()).map(Cookie::getName).filter(s -> s.equals("sd") || s.equals("sp") || s.equals("vp")).count() == 3) {
                 // if there are all the cookies to do the order, redirect to the Confirmation page
                 path = getServletContext().getContextPath() + "/CreateOrder";
             } else {

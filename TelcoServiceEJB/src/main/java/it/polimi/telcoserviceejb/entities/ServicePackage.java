@@ -16,19 +16,22 @@ public class ServicePackage {
     @Column(name = "name", length = 45)
     private String name;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.REFRESH})
     @JoinTable(name = "service_package__validity_period",
             joinColumns = @JoinColumn(name = "id_service_package"),
             inverseJoinColumns = @JoinColumn(name = "id_validity_period"))
     private List<ValidityPeriod> validityPeriods;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.REFRESH})
     @JoinTable(name = "optional_product__service_package",
             joinColumns = @JoinColumn(name = "id_service_package"),
             inverseJoinColumns = @JoinColumn(name = "id_optional_product"))
     private List<OptionalProduct> optionalProducts ;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.REFRESH})
     @JoinTable(name = "service__service_package",
             joinColumns = @JoinColumn(name = "id_service_package"),
             inverseJoinColumns = @JoinColumn(name = "id_service"))

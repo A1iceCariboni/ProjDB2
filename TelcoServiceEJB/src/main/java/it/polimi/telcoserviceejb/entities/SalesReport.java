@@ -9,19 +9,22 @@ import javax.persistence.*;
                 @NamedQuery(name="SalesReport.valueNoOptProducts", query = "SELECT SUM(sr.valueNoOptProducts) FROM SalesReport sr WHERE sr.idServicePackage = ?1 "),
                 @NamedQuery(name="SalesReport.valueWithOptProducts", query = "SELECT SUM(sr.valueOfOptProducts) FROM SalesReport sr WHERE sr.idServicePackage = ?1 "),
                 @NamedQuery(name="SalesReport.avgNumberOfOpt", query = "SELECT AVG(sr.numberOptProducts) FROM SalesReport sr WHERE sr.idServicePackage = ?1 ")
-}
-)
+})
 public class SalesReport {
     @EmbeddedId
     private SalesReportId id;
 
     @MapsId("idServicePackage")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = {CascadeType.REFRESH},
+            optional = false)
     @JoinColumn(name = "id_service_package", nullable = false)
     private ServicePackage idServicePackage;
 
     @MapsId("idValidityPeriod")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY,
+            cascade = {CascadeType.REFRESH},
+            optional = false)
     @JoinColumn(name = "id_validity_period", nullable = false)
     private ValidityPeriod idValidityPeriod;
 

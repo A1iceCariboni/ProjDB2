@@ -43,6 +43,12 @@ public class AddOptionalProduct extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // checking if logged as employee
+        if (request.getSession().getAttribute("employee") == null) {
+            response.sendRedirect(request.getServletContext().getContextPath() + "/index.html");
+            return;
+        }
+
         String name = null;
         String strFee = null;
         try {
@@ -54,7 +60,7 @@ public class AddOptionalProduct extends HttpServlet {
             float fee = Float.parseFloat(strFee);
             if (fee >= 0) {
                 opService.createOptionalProduct(name, fee);
-            }else {
+            } else {
                 throw new Exception("Can't insert a negative fee");
             }
         } catch (Exception e) {
@@ -70,6 +76,11 @@ public class AddOptionalProduct extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // checking if logged as employee
+        if (request.getSession().getAttribute("employee") == null) {
+            response.sendRedirect(request.getServletContext().getContextPath() + "/index.html");
+            return;
+        }
 
         String path = "/WEB-INF/HomeEmp.html";
         ServletContext servletContext = getServletContext();
