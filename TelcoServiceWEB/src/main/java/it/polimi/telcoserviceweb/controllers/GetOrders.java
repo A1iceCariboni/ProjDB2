@@ -44,10 +44,7 @@ public class GetOrders extends HttpServlet {
             throws ServletException, IOException {
         List<Order> orders = null;
         User user = (User) request.getSession().getAttribute("user");
-        if (user == null) {
-            response.sendRedirect(request.getServletContext().getContextPath() + "/index.html");
-            return;
-        }
+
         try {
             orders = orderService.getOrdersPerUser(user.getId());
         } catch (Exception e) {

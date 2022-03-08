@@ -57,12 +57,6 @@ public class GoToHomeEmp extends HttpServlet{
         List<Service> services = null;
         List<ServicePackage> servicePackages = null;
 
-        // checking if logged as employee
-        if(request.getSession().getAttribute("employee") == null){
-            response.sendRedirect(request.getServletContext().getContextPath() + "/index.html");
-            return;
-        }
-
         try{
             ops = opService.getAllOptionalProduct();
             validityPeriods = validityPeriodService.getAllValidityPeriod();

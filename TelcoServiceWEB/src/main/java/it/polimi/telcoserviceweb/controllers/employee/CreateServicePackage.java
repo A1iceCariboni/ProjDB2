@@ -46,12 +46,6 @@ public class CreateServicePackage extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // checking if logged as employee
-        if(request.getSession().getAttribute("employee") == null){
-            response.sendRedirect(request.getServletContext().getContextPath() + "/index.html");
-            return;
-        }
-
         String name = null;
         List<Integer> validity_periods_ids = null;
         List<Integer> optional_products_ids = null;
