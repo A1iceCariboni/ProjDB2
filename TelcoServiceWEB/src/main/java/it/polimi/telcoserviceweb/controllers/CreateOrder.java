@@ -74,8 +74,8 @@ public class CreateOrder extends HttpServlet {
 
                 System.out.println(cookies);
             } catch (ParseException | NumberFormatException e) {
-                e.printStackTrace();
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Not able to retrieve order infos");
+                CookieManager.makeOrderCookieExpire(request, response);
+                response.sendRedirect(getServletContext().getContextPath() + "/Home");
                 return;
             }
 
@@ -99,7 +99,7 @@ public class CreateOrder extends HttpServlet {
             }
         } else {
             // not logged: generate cookie if necessary
-                if (submitted_form) {
+            if (submitted_form) {
                 // not logged and submitted form: create cookies
                 System.out.println(id_service_package);
                 System.out.println(id_validity_period);
@@ -122,7 +122,8 @@ public class CreateOrder extends HttpServlet {
                 response.addCookie(c_id_to_see);
             } else {
                 // not logged and no submission: error
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Creating order with no cookies and no submission");
+                System.out.println("Creating order with no cookies and no submission. Redirecting to Home");
+                response.sendRedirect(getServletContext().getContextPath() + "/Home");
                 return;
             }
         }

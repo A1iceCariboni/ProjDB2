@@ -93,7 +93,6 @@ public class Confirmation extends HttpServlet {
                 // if not logged
                 order = generateOrderFromCookies(request);
             } catch (Exception e) {
-                e.printStackTrace();
                 order = null;
             }
         } else {
@@ -111,7 +110,7 @@ public class Confirmation extends HttpServlet {
                 } catch (Exception e1) {
                     CookieManager.makeOrderToSeeCookieExpire(request, response);
                     order = null;
-                    System.out.println(e1.getMessage());
+                    System.out.println("catching the logged one who wanted to see a non existent order by id");
                 }
                 System.out.println("CONFIRMATION: logged and ID");
             }
