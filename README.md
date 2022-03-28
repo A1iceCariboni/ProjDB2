@@ -8,7 +8,8 @@ You can read the project specifications in the file NEW_DB2-develproject-21-22-f
 
 # Built With
 
-This project was developed in Java, using Intellij IDE, Tomee application server, MySql, HTML, CSS and Bootstrap web framework
+This project was developed in Java, using Intellij IDE, Tomee application server, MySql, HTML, CSS and Bootstrap web framework.
+You can read the Corigliano-Cariboni_ProjectDocumentation.pdf file for more information on the project struture and development process.
 
 # Authors 
 
